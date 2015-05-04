@@ -5,6 +5,12 @@
 <script>
     $(document).ready(function(){
         $('title').text('My Site - Portfolio');
+        $('.link-group').click(function(){
+            $('.sub-group').slideUp();
+            if($(this).next('ul').is(':hidden')){
+                $(this).next('ul').slideToggle();
+            }
+        });
     });
 </script>
 <div class="row" style="padding-top:15px;">
@@ -17,13 +23,29 @@
                 <div class="panel-heading" style="text-align:center;">
                     Quick Links
                 </div>
-                <ul class="list-group" style="list-style-type:none;">
-                    <a class="list-group-item"><li>Test Link</li></a>
-                    <a class="list-group-item"><li>Test Link</li></a>
-                    <a class="list-group-item"><li>Test Link</li></a>
-                    <a class="list-group-item"><li>Test Link</li></a>
-                    <a class="list-group-item"><li>Test Link</li></a>
-                    <a class="list-group-item"><li>Test Link</li></a>
+                <ul class="list-group main-group" style="list-style-type:none;">
+                    <a class="list-group-item list-group-item-info link-group">
+                        <li>Test Group</li>
+                    </a>
+                    <ul class="list-group sub-group" style="list-style-type:none;padding-top:1px;margin-bottom:0px;display:none;">
+                        <a class="list-group-item"><li>Test Link</li></a>
+                        <a class="list-group-item"><li>Test Link</li></a>
+                        <a class="list-group-item"><li>Test Link</li></a>
+                        <a class="list-group-item"><li>Test Link</li></a>
+                        <a class="list-group-item"><li>Test Link</li></a>
+                        <a class="list-group-item"><li>Test Link</li></a>
+                    </ul>
+                    <a class="list-group-item list-group-item-info link-group">
+                        <li>Test Group</li>
+                    </a>
+                    <ul class="list-group sub-group" style="list-style-type:none;padding-top:1px;margin-bottom:0px;display:none;">
+                        <a class="list-group-item"><li>Test Link</li></a>
+                        <a class="list-group-item"><li>Test Link</li></a>
+                        <a class="list-group-item"><li>Test Link</li></a>
+                        <a class="list-group-item"><li>Test Link</li></a>
+                        <a class="list-group-item"><li>Test Link</li></a>
+                        <a class="list-group-item"><li>Test Link</li></a>
+                    </ul>
                 </ul>
                 <div class="panel-footer">
                     
