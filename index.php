@@ -21,11 +21,11 @@
                 else{
                     navigation();
                 }
-                $('.nav li a').click(function(){
+                /*$('.nav li a').click(function(){
                     if($(this).attr('href') === location.hash){
                         navigation();
                     }
-                });
+                });*/
             });
 
             $(window).on('hashchange',function(){
