@@ -42,7 +42,10 @@
                         switch(XMLHttpRequest.status){
                             case 404:
                                 $('title').text('Where are you trying to go?');
-                                $('#content').html(responseText);
+                                //$('#content').html(responseText);
+                                $('#content').load('views/redirect.php',function(){
+                                    
+                                });
                                 break;
                             case 500:
                                 break;
