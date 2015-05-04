@@ -2,6 +2,11 @@
     
 ?>
 <title>Welcome to My Site!</title>
+<script>
+    $(document).ready(function(){
+        $('title').text('My Site - Home');
+    });
+</script>
 <div class="row" style="padding-top:15px;">
     <div class="col-lg-4 visible-lg">
         <div class="jumbotron" style="height:175px; margin-bottom:0px;">

@@ -7,6 +7,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+        <title></title>
         <style>
             
         </style>
@@ -28,6 +29,7 @@
             });
 
             $(window).on('hashchange',function(){
+                $('title').text('Loading...');
                 navigation();
             });
 
@@ -39,6 +41,7 @@
                     $('#content').load('views/'+location.hash.replace('#','')+'.php',function(responseText,textStatus,XMLHttpRequest){
                         switch(XMLHttpRequest.status){
                             case 404:
+                                $('title').text('Where are you trying to go?');
                                 $('#content').html(responseText);
                                 break;
                             case 500:
