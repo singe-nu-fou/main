@@ -12,12 +12,42 @@
         </style>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-        <script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
-        <script src="assets/javascript/navigator.js"></script>
         <script>
             $(document).ready(function(){
-                
+                if(location.hash === ''){
+                    location.hash = '#home';
+                }
+                else{
+                    navigation();
+                }
+                $('.nav li a').click(function(){
+                    if($(this).attr('href') === location.hash){
+                        navigation();
+                    }
+                });
             });
+
+            $(window).on('hashchange',function(){
+                navigation();
+            });
+
+            function navigation(){
+                $('.nav li a').each(function(){
+                    $(this).attr('href') === location.hash ? $(this).parents('li').addClass('active') : $(this).parents('li').removeClass('active');
+                });
+                $('#content').fadeOut('slow',function(){
+                    $('#content').load('views/'+location.hash.replace('#','')+'.php',function(responseText,textStatus,XMLHttpRequest){
+                        switch(XMLHttpRequest.status){
+                            case 404:
+                                $('#content').html(responseText);
+                                break;
+                            case 500:
+                                break;
+                        }
+                        $('#content').fadeIn('slow');
+                    });
+                });
+            }
         </script>
     </head>
     <body>
@@ -30,55 +60,25 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="?nav=home">Project name</a>
+                    <a class="navbar-brand" href="">Project name</a>
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
                         <li>
-                            <a href="?nav=portfolio">Portfolio</a>
+                            <a href="#portfolio">Portfolio</a>
                         </li>
                         <li>
-                            <a href="?nav=about">About</a>
+                            <a href="#about">About</a>
                         </li>
                         <li>
-                            <a href="?nav=contact">Contact</a>
+                            <a href="#contact">Contact</a>
                         </li>
                     </ul>
-                    <form class="navbar-form navbar-right">
-                        <?php
-                            if(!isset($thing)){
-                        ?>
-                        <div class="form-group">
-                            <input type="text" placeholder="Email" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <input type="password" placeholder="Password" class="form-control">
-                        </div>
-                        <button type="submit" class="btn btn-success form-control">Sign in</button>
-                        <?php
-                            }
-                            else{
-                        ?>
-                        <div class="input-group">
-                            <div class="input-group-addon">
-                                <?=$_SESSION['username']?>
-                            </div>
-                            <button type="submit" class="btn btn-success">Sign Out</button>
-                        </div>
-                        <?php
-                            }
-                        ?>
-                    </form>
                 </div>
             </div>
         </nav>
         <div id="content" class="container" style="padding-top:50px;">
-            <?php
-                $file_path = 'views/'.((isset($_GET['nav'])) ? $_GET['nav'] : 'home').'.php';
-                if(file_exists($file_path)){
-                    include($file_path);
-                }
-            ?>
+            
         </div>
     </body>
 </html>
