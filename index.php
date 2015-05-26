@@ -21,11 +21,11 @@
                 else{
                     navigation();
                 }
-                /*$('.nav li a').click(function(){
+                $('.nav li a,.navbar-brand').click(function(){
                     if($(this).attr('href') === location.hash){
                         navigation();
                     }
-                });*/
+                });
             });
 
             $(window).on('hashchange',function(){
@@ -38,14 +38,15 @@
                     $(this).attr('href') === location.hash ? $(this).parents('li').addClass('active') : $(this).parents('li').removeClass('active');
                 });
                 $('#content').fadeOut('slow',function(){
-                    $('#content').load('views/'+location.hash.replace('#','')+'.php',function(responseText,textStatus,XMLHttpRequest){
+                    var hash = location.hash;
+                    var data = hash.split('/');
+                    console.log(data[1]);
+                    $('#content').load('views/'+data[0].replace('#','')+'.php',function(responseText,textStatus,XMLHttpRequest){
                         switch(XMLHttpRequest.status){
                             case 404:
                                 $('title').text('Where are you trying to go?');
                                 //$('#content').html(responseText);
-                                $('#content').load('views/redirect.php',function(){
-                                    
-                                });
+                                $('#content').load('views/redirect.php',function(){});
                                 break;
                             case 500:
                                 break;
