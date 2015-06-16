@@ -7,7 +7,6 @@
         private $FOOTER = '<div class="panel-footer"></div>';
         
         public function __construct($HEADER,$ADVANCED_CONTROL,$SPECIAL_CONTROL,$THEAD,$SELECTABLE = ''){
-            if(isset)
             $this->HEADER = '<div class="panel-heading">'.$HEADER.'</div>';
             $this->ADVANCED_CONTROL = '<ul class="nav nav-pills nav-justified">';
             foreach($ADVANCED_CONTROL AS $KEY=>$VALUE){
