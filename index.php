@@ -14,6 +14,8 @@
         
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+        <script src="libraries/selectable.js"></script>
+        <script src="libraries/elevatezoom-master/jquery.elevatezoom.js"></script>
         <script src="libraries/common.js"></script>
     </head>
     <body>
@@ -38,8 +40,7 @@
                         <div id="navbar" class="navbar-collapse collapse">
                             <ul class="nav navbar-nav">
                                 <li <?=isset($_GET['nav']) && $_GET['nav'] === 'home' ? 'class="active"' : ''?>><a href="?nav=home">Home</a></li>
-                                <li <?=isset($_GET['nav']) && $_GET['nav'] === 'Link A' ? 'class="active"' : ''?>><a href="?nav=Link+A">Link A</a></li>
-                                <li <?=isset($_GET['nav']) && $_GET['nav'] === 'Link B' ? 'class="active"' : ''?>><a href="?nav=Link+B">Link B</a></li>
+                                <li <?=isset($_GET['nav']) && $_GET['nav'] === 'admin' ? 'class="active"' : ''?>><a href="?nav=admin">Admin</a></li>
                             </ul>
 
                             <ul class="nav navbar-nav navbar-right">
@@ -50,9 +51,11 @@
                 </nav>
             </div>
             <div class="row" style="padding-top:60px;">
-                <div class="col-lg-12">
-                    Test
-                </div>
+                <?php
+                    if(isset($_GET['nav'])){
+                        include('views/'.$_GET['nav'].'.php');
+                    }
+                ?>
             </div>
             <?php
                 }
@@ -71,7 +74,7 @@
                         <?php
                             if(isset($_SESSION['ERR_MSG'])){
                                 echo '<div class="alert alert-danger text-center" role="alert">'.$_SESSION['ERR_MSG'].'</div>';
-                                unset($_SESSION['messages']);
+                                unset($_SESSION['ERR_MSG']);
                             }
                         ?>
                     </div>
