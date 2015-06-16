@@ -39,6 +39,53 @@ $(document).ready(function(){
                     $(this).closest('tr').removeClass('active');
                 });
                 break;
+            case 'new_user':
+                if($('#newUser').is(':visible')){
+                    $('#newUser').slideUp();
+                }
+                else{
+                    $('#newUser').slideUp();
+                    $('#editUser').slideUp();
+                    $('#newUser').slideToggle();
+                }
+                break;
+            case 'edit_user':
+                var checked = getChecked();
+                if(checked.length > 1){
+                    alert('You can only edit one user at a time!');
+                    return;
+                }
+                else if(checked.length === 0){
+                    alert('In order to edit a user, please select one.');
+                    return;
+                }
+                if($('#editUser').is(':visible')){
+                    $('#editUser').slideUp();
+                }
+                else{
+                    $('#newUser').slideUp();
+                    $('#editUser').slideUp();
+                    $('#editUser').slideToggle();
+                }
+                break;
+            case 'delete_users':
+                var checked = getChecked();
+                if(checked.length === 0){
+                    alert('In order to delete a user, please select one.');
+                    return;
+                }
+                confirm("Are you sure you want to delete the selected users?");
+                break;
         }
     });
 });
+
+function getChecked(){
+    var checked = new Array();
+
+    $.each($('tr').find('.checkbox:checked'),function(){
+        checked.push( $(this).val() );
+    });
+
+    return checked;
+}

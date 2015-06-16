@@ -1,6 +1,10 @@
+#newUser,#editUser{
+    display:none;
+}
+
 .input-group-addon{
-    min-width:100px;
-    text-align:left;
+    min-width:120px;
+    text-align:center;
 }
 
 a.list-group-item{

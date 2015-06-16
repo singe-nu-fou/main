@@ -66,4 +66,10 @@
             session_start();
             $_SESSION['ERR_MSG'] = "Signed out successfully.";
         }
+        
+        public static function getUserTypes(){
+            $DB = self::database();
+            $DB->query("SELECT * FROM USER_TYPES");
+            return $DB->fetch_assoc_all();
+        }
     }

@@ -5,12 +5,12 @@
         'Select All'=>'select_all',
         'Deselect All'=>'deselect_all',
         'New User'=>'new_user',
-        'Edit Users'=>'reset_password',
-        'Delete Users'=>'delete_user'
+        'Edit User'=>'edit_user',
+        'Delete Users'=>'delete_users'
     );
     $SPECIAL_CONTROL = array(
         array('New User'),
-        array('Edit Users')
+        array('Edit User')
     );
     $THEAD = array(
         'ID'=>'ID',
