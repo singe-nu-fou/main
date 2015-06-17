@@ -6,6 +6,10 @@
                     return self::users($ACTION);
                 case 'Classifications':
                     return self::classes($ACTION);
+                case 'Types':
+                    return self::types($ACTION);
+                case 'Attributes':
+                    return self::attributes($ACTION);
             }
         }
         
@@ -30,6 +34,30 @@
                     return classes::newClass();
                 case 'Edit Class':
                     return classes::editClass();
+            }
+        }
+        
+        private static function types($ACTION){
+            require_once('types.php');
+            switch($ACTION){
+                case 'TBODY':
+                    return types::getTBODY();
+                case 'New Type':
+                    return types::newType();
+                case 'Edit Type':
+                    return types::editType();
+            }
+        }
+        
+        private static function attributes($ACTION){
+            require_once('attributes.php');
+            switch($ACTION){
+                case 'TBODY':
+                    return attributes::getTBODY();
+                case 'New Attribute':
+                    return attributes::newAttribute();
+                case 'Edit Attribute':
+                    return attributes::editAttribute();
             }
         }
     }

@@ -75,7 +75,7 @@
         
         public static function getAllClass(){
             $DB = self::database();
-            $DB->query("SELECT * FROM CLASS ORDER BY ID ASC");
+            $DB->query("SELECT * FROM CLASSES ORDER BY ID ASC");
             return $DB->fetch_assoc_all();
         }
     }

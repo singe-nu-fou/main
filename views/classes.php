@@ -3,9 +3,11 @@
     require_once('classes/table.php');
     $HEADER = 'Classifications';
     $ADVANCED_CONTROL = array(
-        'New Class'=>'new_user',
-        'Edit Class'=>'edit_user',
-        'Delete Class'=>'delete_users'
+        'Select All'=>'select_all',
+        'Deselect All'=>'deselect_all',
+        'New Class'=>'new',
+        'Edit Class'=>'edit',
+        'Delete Class'=>'delete'
     );
     $SPECIAL_CONTROL = array(
         'New Class',

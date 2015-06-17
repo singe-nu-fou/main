@@ -1,7 +1,7 @@
 <?php
     class users{
         public static function newUser(){
-            $PANEL = '<div id="newUser" class="panel panel-default" style="margin-bottom:0px;">
+            $PANEL = '<div id="new" class="panel panel-default" style="margin-bottom:0px;">
                         <div class="panel-heading">New User</div>
                         <div class="panel-body">
                             <form method="POST" action="libraries/update.php">
@@ -46,7 +46,7 @@
         }
         
         public static function editUser(){
-            $PANEL = '<div id="editUser" class="panel panel-default" style="margin-bottom:0px;">
+            $PANEL = '<div id="edit" class="panel panel-default" style="margin-bottom:0px;">
                         <div class="panel-heading">Edit User</div>
                         <div class="panel-body">
                             <form method="POST" action="?'.$_SERVER['QUERY_STRING'].'">
@@ -102,7 +102,7 @@
         
         public static function getTBODY(){
             $DB = portal::database();
-            $DB->query("SELECT USER_ACCOUNTS.ID,USER_NAME,USER_TYPE,USER_LOGIN FROM USER_ACCOUNTS JOIN USER_TYPES ON USER_TYPE_ID = USER_TYPES.ID ORDER BY ".$_GET['orderBy']." ".$_GET['order']);
+            $DB->query("SELECT USER_ACCOUNTS.ID,USER_NAME,USER_TYPE,USER_LOGIN FROM USER_ACCOUNTS JOIN USER_TYPES ON USER_TYPE_ID = USER_TYPES.ID ORDER BY ? ?",array($_GET['orderBy'],$_GET['order']));
             $TBODY = "<tbody>";
             while($RESULT = $DB->fetch_assoc()){
                 $TBODY .= '<tr><td><input type="checkbox" class="checkbox" value="'.$RESULT['ID'].'" style="display:none;">'.$RESULT['ID'].'</td>';
