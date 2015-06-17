@@ -39,6 +39,12 @@ $(document).ready(function(){
                     $(this).closest('tr').removeClass('active');
                 });
                 break;
+            case 'new_class':
+                break;
+            case 'edit_class':
+                break;
+            case 'delete_class':
+                break;
             case 'new_user':
                 if($('#newUser').is(':visible')){
                     $('#newUser').slideUp();

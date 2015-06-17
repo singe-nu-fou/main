@@ -1,4 +1,5 @@
 <?php
+    require_once('classes/router.php');
     require_once('classes/table.php');
     $HEADER = 'User Account Control';
     $ADVANCED_CONTROL = array(
@@ -9,8 +10,8 @@
         'Delete Users'=>'delete_users'
     );
     $SPECIAL_CONTROL = array(
-        array('New User'),
-        array('Edit User')
+        'New User',
+        'Edit User'
     );
     $THEAD = array(
         'ID'=>'ID',
