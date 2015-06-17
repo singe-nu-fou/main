@@ -59,13 +59,17 @@ $(document).ready(function(){
                     alert('In order to edit a user, please select one.');
                     return;
                 }
-                if($('#editUser').is(':visible')){
-                    $('#editUser').slideUp();
-                }
                 else{
-                    $('#newUser').slideUp();
-                    $('#editUser').slideUp();
-                    $('#editUser').slideToggle();
+                    $('#USER_NAME').text(checked[0]);
+                    $('#editUser form').attr('action','libraries/update.php?action=editUser&users='+checked[0]);
+                    if($('#editUser').is(':visible')){
+                        $('#editUser').slideUp();
+                    }
+                    else{
+                        $('#newUser').slideUp();
+                        $('#editUser').slideUp();
+                        $('#editUser').slideToggle();
+                    }
                 }
                 break;
             case 'delete_users':
@@ -74,7 +78,9 @@ $(document).ready(function(){
                     alert('In order to delete a user, please select one.');
                     return;
                 }
-                confirm("Are you sure you want to delete the selected users?");
+                if(confirm("Are you sure you want to delete the selected users?")){
+                    window.location.href = "libraries/update.php?action=deleteUsers&users="+JSON.stringify(checked);
+                }
                 break;
         }
     });

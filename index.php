@@ -62,13 +62,13 @@
                 else{
             ?>
             <div class="container">
-                <form method="post" action="libraries/gate.php?portal=open" style="padding-top:35vh;">
+                <form method="post" action="libraries/gate.php?portal=open" style="padding-top:35vh;" autocomplete="off">
                     <div class="col-lg-4 col-lg-offset-4">
-                        <img style="width:100%;padding-bottom:15px;" src="images/logo.png">
+                        <!--<img style="width:100%;padding-bottom:15px;" src="images/logo.png">-->
 
-                        <input type="text" name="USER_NAME" class="form-control">
+                        <input type="text" name="USER_NAME" class="form-control" autocomplete="off">
 
-                        <input type="password" name="USER_PASS" class="form-control">
+                        <input type="password" name="USER_PASS" class="form-control" autocomplete="off">
 
                         <button type="submit" class="btn btn-default form-control">Sign In</button>
                         <?php

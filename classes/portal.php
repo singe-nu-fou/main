@@ -67,9 +67,53 @@
             $_SESSION['ERR_MSG'] = "Signed out successfully.";
         }
         
+        public static function getErrMsg(){
+            if(isset($_SESSION['ERR_MSG'])){
+                echo '<div class="alert alert-danger" style="margin-bottom:0px;">'.$_SESSION['ERR_MSG'].'</div>';
+                unset($_SESSION['ERR_MSG']);
+            }
+        }
+        
         public static function getUserTypes(){
             $DB = self::database();
             $DB->query("SELECT * FROM USER_TYPES");
             return $DB->fetch_assoc_all();
+        }
+        
+        public static function userNameValid($USER_NAME){
+            $_SESSION['ERR_MSG'] = 'Invalid username: ';
+            if(strlen(trim($USER_NAME)) === 0 || strlen(trim($USER_NAME)) < 6){
+                $_SESSION['ERR_MSG'] .= 'Username must be at least six characters long.';
+                return true;
+            }
+            if(preg_match('/[\'^£$%&*()}{@#~?><>,.|=+¬-]/', $USER_NAME)){
+                $_SESSION['ERR_MSG'] .= 'Username cannot contain special characters other than underscores.';
+                return true;
+            }
+            if(count(explode(' ',$USER_NAME)) !== 1){
+                $_SESSION['ERR_MSG'] .= 'Username cannot contain spaces.';
+                return true;
+            }
+            unset($_SESSION['ERR_MSG']);
+            return false;
+        }
+        
+        public static function userPassValid($USER_PASS){
+            if(strlen(trim($USER_PASS)) === 0 || strlen(trim($USER_PASS)) < 6){
+                return true;
+            }
+            if(count(explode(' ',$USER_PASS)) !== 1){
+                return true;
+            }
+            return false;
+        }
+        
+        public static function userNameExists($USER_NAME){
+            $DB = portal::database();
+            $DB->query("SELECT USER_NAME FROM USER_ACCOUNTS WHERE USER_NAME = ?",array($USER_NAME));
+            if($DB->fetch_assoc()){
+                return true;
+            }
+            return false;
         }
     }

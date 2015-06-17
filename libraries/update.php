@@ -1,17 +1,27 @@
 <?php
+    session_start();
     require_once('../classes/portal.php');
-    $ORIGIN = $_SERVER['HTTP_REFERER'];
-    $ORIGIN = explode('?',$ORIGIN);
-    $ORIGIN = '?'.$ORIGIN[1];
-    $USER = array(
-        'USER_NAME'=>NULL,
-        'USER_PASS'=>NULL,
-        'USER_TYPE_ID'=>NULL
-    );
-    foreach($_POST AS $KEY=>$VALUE){
-        if($key === 'USER_NAME' && (strlen(trim($VALUE)) === 0 || strlen(trim($VALUE)) < 6)){
-            $_SESSION['ERR_MSG'] = 'Invalid username length. Required length is at least six characters';
+    
+    if(portal::isSignedIn()){
+        require_once('../classes/update.php');
+
+        $ORIGIN = $_SERVER['HTTP_REFERER'];
+        $ORIGIN = explode('?',$ORIGIN);
+        $ORIGIN = '?'.$ORIGIN[1];
+
+        switch($_GET['action']){
+            case 'newUser':
+                update::newUser($_POST);
+                break;
+            case 'editUser':
+                update::editUser($_GET['users'],$_POST);
+                break;
+            case 'deleteUsers':
+                if(isset($_GET['users'])){
+                    update::deleteUser(json_decode($_GET['users']));
+                }
+                break;
         }
-        $USER[$KEY] = $VALUE;
     }
-    //header('Location: ../'.$ORIGIN);
+
+    header('Location: ../'.$ORIGIN);
