@@ -98,20 +98,6 @@
             }
         }
         
-        public static function userNameExists($USER_NAME){
-            $DB = portal::database();
-            $DB->query("SELECT USER_NAME FROM USER_ACCOUNTS WHERE USER_NAME = ?",array($USER_NAME));
-            if($DB->fetch_assoc()){
-                return true;
-            }
-            return false;
-        }
-        
-        public static function isJson($string){
-            json_decode($string);
-            return (json_last_error() === JSON_ERROROR_NONE);
-        }
-        
         public static function redirect($location = '../'){
             header('Location: '.$location);
         }
