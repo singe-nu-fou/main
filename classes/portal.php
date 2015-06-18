@@ -6,10 +6,19 @@
                 'GET' => (isset($_GET['names'])) ? ((portal::isJson($_GET['names'])) ? json_decode($_GET['names']) : $_GET['names']) : NULL
             );
             if($ZONE !== 'portal'){
-                require_once($NAV.'.php');
+                require_once($ZONE.'.php');
                 return $ZONE::$ACTION($DATA);
             }
             return self::$ACTION($DATA);
+        }
+        
+        public static function database(){
+            require_once('Zebra_Database\Zebra_Database.php');
+            $connection = new Zebra_Database();
+            $connection->debug = false;
+            $connection->connect('localhost','root','','alpha');
+            $connection->set_charset();
+            return $connection;
         }
         
         public static function signIn($DATA){
@@ -17,7 +26,7 @@
             var_dump($DATA);
             //exit;
             if(portal::validUsername($DATA['POST']['USER_NAME']) && portal::validPassword($DATA['POST']['USER_PASSWORD'])){
-                $DB->query("SELECT USER_NAME,USER_PASSWORD,USER_TYPE,LAST_LOGIN 
+                $DB->query("SELECT USER_ACCOUNT.ID,USER_NAME,USER_PASSWORD,USER_TYPE,LAST_LOGIN 
                             FROM USER_ACCOUNT 
                             LEFT JOIN USER_TYPE ON USER_TYPE_ID = USER_TYPE.ID 
                             LEFT JOIN USER_NAME ON USER_TYPE_ID = USER_NAME.ID 
@@ -27,9 +36,10 @@
                     $_SESSION['ERROR_MSG'] = 'Incorrect username or password.';
                     return false;
                 }
-                unset($RESULT->USER_PASS);
                 foreach($RESULT AS $KEY=>$VALUE){
-                    $_SESSION[$KEY] = $VALUE;
+                    if($KEY !== 'USER_PASSWORD'){
+                        $_SESSION[$KEY] = $VALUE;
+                    }
                 }
                 $DB->query("UPDATE USER_ACCOUNT LEFT JOIN USER_NAME ON USER_NAME_ID = USER_NAME.ID SET LAST_LOGIN = NOW()+0 WHERE USER_NAME = ?",array($_SESSION['USER_NAME']));
                 return '../?nav=home';
@@ -72,19 +82,19 @@
         }
         
         public static function isSignedIn(){
-            if(isset($_SESSION['USER_NAME'])){
+            if(isset($_SESSION['USER_NAME']) && self::userNameExists($_SESSION['ID'],$_SESSION['USER_NAME'])){
                 return true;
             }
             return false;
         }
         
-        public static function database(){
-            require_once('Zebra_Database\Zebra_Database.php');
-            $connection = new Zebra_Database();
-            $connection->debug = false;
-            $connection->connect('localhost','root','','alpha');
-            $connection->set_charset();
-            return $connection;
+        public static function userNameExists($ID,$USER_NAME){
+            $DB = portal::database();
+            $DB->query("SELECT * FROM USER_ACCOUNT LEFT JOIN USER_NAME ON USER_NAME_ID = USER_NAME.ID WHERE USER_ACCOUNT.ID = ? AND USER_NAME = ?",array($ID,$USER_NAME));
+            if($DB->fetch_assoc()){
+                return true;
+            }
+            return false;
         }
         
         public static function getMsg(){

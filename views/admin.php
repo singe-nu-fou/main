@@ -20,7 +20,7 @@
 </div>
 <div class="col-lg-10">
     <?php
-        portal::getErrMsg();
+        portal::getMsg();
         if(isset($_GET['subnav'])){
             include('views/'.$SUBNAV.'.php');
         }

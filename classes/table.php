@@ -1,26 +1,19 @@
 <?php
     class table{
-        private $HEADER;
-        private $ADVANCED_CONTROL;
-        private $SPECIAL_CONTROL = NULL;
-        private $TABLE;
-        private $FOOTER = '<div class="panel-footer"></div>';
+        public $HEADER;
+        public $CONTROL_PANEL;
+        public $TABLE;
+        public $FOOTER = '<div class="panel-footer"></div>';
         
-        public function __construct($HEADER,$ADVANCED_CONTROL,$SPECIAL_CONTROL,$THEAD,$SELECTABLE = ''){
-            $this->HEADER = '<div class="panel-heading">'.$HEADER.'</div>';
-            $this->ADVANCED_CONTROL = '<ul class="nav nav-pills nav-justified">';
+        public function __construct($TITLE,$CONTROL_PANEL,$THEAD,$SELECTABLE = ''){
+            $this->HEADER = '<div class="panel-heading">'.$TITLE.'</div>';
+            $this->CONTROL_PANEL = '<ul class="nav nav-pills nav-justified">';
             
-            foreach($ADVANCED_CONTROL AS $KEY=>$VALUE){
-                $this->ADVANCED_CONTROL .= '<li><a href="'.$VALUE.'" class="advanced_control list-group-item">'.$KEY.'</a></li>';
+            foreach($CONTROL_PANEL AS $KEY=>$VALUE){
+                $this->CONTROL_PANEL .= '<li><a ID="'.$VALUE.'" class="CONTROL_PANEL list-group-item">'.$KEY.'</a></li>';
             }
             
-            $this->ADVANCED_CONTROL .= '</ul>';
-            
-            if($SPECIAL_CONTROL !== NULL){
-                foreach($SPECIAL_CONTROL AS $KEY=>$VALUE){
-                    $this->SPECIAL_CONTROL .= router::route($_GET['subnav'],$VALUE);
-                }
-            }
+            $this->CONTROL_PANEL .= '</ul>';
             
             $this->TABLE = '<table class="'.$SELECTABLE.' table table-hover">';
             $this->TABLE .= '<thead><tr>';
@@ -30,22 +23,19 @@
             }
             
             $this->TABLE .= '</tr></thead>';
-            $this->TABLE .= router::route($_GET['subnav'],'TBODY');
+            $this->TABLE .= portal::warp($_GET['subnav'],'TBODY');
             $this->TABLE .= '</table>';
         }
         
         public function getTable(){
-            return $this->compile();
-        }
-        private function compile(){
-            return '<div class="panel panel-default">'.$this->HEADER.$this->ADVANCED_CONTROL.$this->SPECIAL_CONTROL.$this->TABLE.$this->FOOTER.'</div>';
+            return '<div class="panel panel-default">'.$this->HEADER.$this->CONTROL_PANEL.$this->TABLE.$this->FOOTER.'</div>';
         }
         
         public static function orderBy($COLUMN){
             $URL = $_SERVER['QUERY_STRING'];
             $URL = str_replace($_GET['orderBy'],$COLUMN,$URL);
             
-            return (($_GET['orderBy'] === $COLUMN) ? ($_GET['order'] === 'DESC' ? str_replace("DESC", "ASC", $URL) : str_replace("ASC", "DESC", $URL)) : str_replace("ASC", "DESC", $URL));
+            return (($_GET['orderBy'] === $COLUMN) ? ($_GET['order'] === 'ASC' ? str_replace("ASC", "DESC", $URL) : str_replace("DESC", "ASC", $URL)) : str_replace("DESC", "ASC", $URL));
         }
         
         public static function orderByIcon($COLUMN){
