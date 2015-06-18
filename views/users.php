@@ -10,8 +10,8 @@
         'Delete Users'=>'delete'
     );
     $SPECIAL_CONTROL = array(
-        'New User',
-        'Edit User'
+        'New User' => 'create',
+        'Edit User' => 'update'
     );
     $THEAD = array(
         'ID'=>'ID',

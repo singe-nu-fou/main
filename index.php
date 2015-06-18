@@ -73,6 +73,11 @@
                                 $('#new').slideToggle();
                             }
                             break;
+                        case 'newTemplate':
+                            var checked = getChecked();
+                            var w = window.open('views/templateWindow.php?action=new','newwindow','width=800,height=900,scrollbars=yes,menubar=no');
+                            w.focus();
+                            break;
                         case 'edit':
                             var checked = getChecked();
                             if(checked.length > 1){
@@ -84,7 +89,7 @@
                                 return;
                             }
                             $('#NAME').text(checked[0]);
-                            $('#edit form').attr('action','libraries/update.php?page=<?=(isset($_GET['subnav']) ? $_GET['subnav'] : '')?>&action=edit&names='+checked[0]);
+                            $('#edit form').attr('action','libraries/update.php?page=<?=(isset($_GET['subnav']) ? $_GET['subnav'] : '')?>&action=update&names='+checked[0]);
                             if($('#edit').is(':visible')){
                                 $('#edit').slideUp();
                             }
@@ -93,6 +98,19 @@
                                 $('#edit').slideUp();
                                 $('#edit').slideToggle();
                             }
+                            break;
+                        case 'editTemplate':
+                            var checked = getChecked();
+                            if(checked.length > 1){
+                                alert('You can only edit one row at a time!');
+                                return;
+                            }
+                            else if(checked.length === 0){
+                                alert('In order to edit a row, please select one.');
+                                return;
+                            }
+                            var w = window.open('views/templateWindow.php?action=edit&template='+checked[0],'newwindow','width=800,height=900,scrollbars=yes,menubar=no');
+                            w.focus();
                             break;
                         case 'delete':
                             var checked = getChecked();

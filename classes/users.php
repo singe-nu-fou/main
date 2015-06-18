@@ -1,6 +1,6 @@
 <?php
     class users{
-        public static function newUser(){
+        public static function create(){
             $PANEL = '<div id="new" class="panel panel-default" style="margin-bottom:0px;">
                         <div class="panel-heading">New User</div>
                         <div class="panel-body">
@@ -45,7 +45,7 @@
             return $PANEL;
         }
         
-        public static function editUser(){
+        public static function edit(){
             $PANEL = '<div id="edit" class="panel panel-default" style="margin-bottom:0px;">
                         <div class="panel-heading">Edit User - <span id="NAME"></span></div>
                         <div class="panel-body">
@@ -92,7 +92,7 @@
             return $PANEL;
         }
         
-        public static function getTBODY(){
+        public static function tbody(){
             $DB = portal::database();
             $DB->query('SELECT USER_ACCOUNTS.ID,USER_NAME,IFNULL(USER_TYPE_NAME,"UNAVAILABLE") AS USER_TYPE_NAME,USER_LOGIN,USER_ACCOUNTS.LAST_MODIFIED FROM USER_ACCOUNTS LEFT JOIN USER_TYPES ON USER_TYPE_ID = USER_TYPES.ID ORDER BY '.$_GET['orderBy'].' '.$_GET['order']);
             $TBODY = "<tbody>";
@@ -107,13 +107,13 @@
             return $TBODY;
         }
         
-        public static function insertUser($DATA){
+        public static function insert($DATA){
             $USER = array(
                 'USER_NAME'=>NULL,
                 'USER_PASS'=>NULL,
                 'USER_TYPE_ID'=>NULL
             );
-            foreach($DATA AS $KEY=>$VALUE){
+            foreach($DATA['POST'] AS $KEY=>$VALUE){
                 $USER[$KEY] = $VALUE;
             }
             switch(true){
@@ -134,28 +134,28 @@
             }
         }
         
-        public static function updateUser($USER,$DATA){
+        public static function update($DATA){
             switch(true){
-                case $DATA['USER_PASS'] !== $DATA['CONF_USER_PASS']:
+                case $DATA['POST']['USER_PASS'] !== $DATA['POST']['CONF_USER_PASS']:
                     $_SESSION['ERR_MSG'] = 'Please ensure the new password and the confirmation password match!';
                     break;
                 default:
                     $DB = portal::database();
                     if(strlen(trim($DATA['USER_PASS'])) === 0){
-                        $SQL = "UPDATE USER_ACCOUNTS SET USER_TYPE_ID = ".$DATA['USER_TYPE_ID'].", LAST_MODIFIED = NOW()+0 WHERE USER_NAME = '".$USER."'";
+                        $SQL = "UPDATE USER_ACCOUNTS SET USER_TYPE_ID = ".$DATA['POST']['USER_TYPE_ID'].", LAST_MODIFIED = NOW()+0 WHERE USER_NAME = '".$DATA['GET']."'";
                     }
                     else{
-                        $SQL = "UPDATE USER_ACCOUNTS SET USER_TYPE_ID = ".$DATA['USER_TYPE_ID'].", USER_PASS = '".MD5($DATA['USER_PASS'])."', LAST_MODIFIED = NOW()+0 WHERE USER_NAME = '".$USER."'";
+                        $SQL = "UPDATE USER_ACCOUNTS SET USER_TYPE_ID = ".$DATA['POST']['USER_TYPE_ID'].", USER_PASS = '".MD5($DATA['POST']['USER_PASS'])."', LAST_MODIFIED = NOW()+0 WHERE USER_NAME = '".$DATA['GET']."'";
                     }
                     $DB->query($SQL);
                     break;
             }
         }
         
-        public static function deleteUser($USERS){
+        public static function delete($DATA){
             $DB = portal::database();
             $SQL = "DELETE FROM USER_ACCOUNTS WHERE ";
-            foreach($USERS AS $KEY=>$VALUE){
+            foreach($DATA['GET'] AS $KEY=>$VALUE){
                 $SQL .= "USER_NAME = '".$VALUE."' ".((count($USERS) - 1 === $KEY) ? '' : 'OR ');
             }
             $DB->query($SQL);

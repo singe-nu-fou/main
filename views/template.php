@@ -5,8 +5,8 @@
     $ADVANCED_CONTROL = array(
         'Select All'=>'select_all',
         'Deselect All'=>'deselect_all',
-        'New Template'=>'new',
-        'Edit Template'=>'edit',
+        'New Template'=>'newTemplate',
+        'Edit Template'=>'editTemplate',
         'Delete Template'=>'delete'
     );
     $SPECIAL_CONTROL = array(

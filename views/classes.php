@@ -10,8 +10,8 @@
         'Delete Class'=>'delete'
     );
     $SPECIAL_CONTROL = array(
-        'New Class',
-        'Edit Class'
+        'New Class' => 'create',
+        'Edit Class' => 'edit'
     );
     $THEAD = array(
         'ID'=>'ID',

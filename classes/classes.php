@@ -1,10 +1,10 @@
 <?php
     class classes{
-        public static function newClass(){
+        public static function create(){
             $PANEL = '<div id="new" class="panel panel-default" style="margin-bottom:0px;">
                         <div class="panel-heading">New Class</div>
                         <div class="panel-body">
-                            <form method="POST" action="libraries/update.php?page=classes&action=new">
+                            <form method="POST" action="libraries/update.php?page=classes&action=insert">
                                 <div class="row">
                                     <div class="col-lg-3">
                                         <div class="input-group">
@@ -25,7 +25,7 @@
             return $PANEL;
         }
         
-        public static function editClass(){
+        public static function edit(){
             $PANEL = '<div id="edit" class="panel panel-default" style="margin-bottom:0px;">
                         <div class="panel-heading">Edit Class - <span id="NAME"></span></div>
                         <div class="panel-body">
@@ -50,7 +50,7 @@
             return $PANEL;
         }
         
-        public static function getTBODY(){
+        public static function tbody(){
             $DB = portal::database();
             $DB->query("SELECT ID,CLASS_NAME,LAST_MODIFIED FROM CLASSES ORDER BY ? ?",array($_GET['orderBy'],$_GET['order']));
             
@@ -75,11 +75,11 @@
             return $TBODY;
         }
         
-        public static function insertClass($DATA){
+        public static function insert($DATA){
             $CLASS = array(
                 'CLASS_NAME'=>NULL
             );
-            foreach($DATA AS $KEY=>$VALUE){
+            foreach($DATA['POST'] AS $KEY=>$VALUE){
                 $CLASS[$KEY] = $VALUE;
             }
             $DB = portal::database();
@@ -92,17 +92,17 @@
             }
         }
         
-        public static function updateClass($CLASS,$DATA){
+        public static function update($DATA){
             $DB = portal::database();
-            $SQL = "UPDATE CLASSES SET CLASS_NAME = '".$DATA['CLASS_NAME']."', LAST_MODIFIED = NOW()+0 WHERE CLASS_NAME = '".$CLASS."'";
+            $SQL = "UPDATE CLASSES SET CLASS_NAME = '".$DATA['POST']['CLASS_NAME']."', LAST_MODIFIED = NOW()+0 WHERE CLASS_NAME = '".$DATA['GET']."'";
             $DB->query($SQL);
         }
         
-        public static function deleteClass($CLASSES){
+        public static function delete($DATA){
             $DB = portal::database();
             $SQL = "DELETE FROM CLASSES WHERE ";
-            foreach($CLASSES AS $KEY=>$VALUE){
-                $SQL .= "CLASS_NAME = '".$VALUE."' ".((count($CLASSES) - 1 === $KEY) ? '' : 'OR ');
+            foreach($DATA['GET'] AS $KEY=>$VALUE){
+                $SQL .= "CLASS_NAME = '".$VALUE."' ".((count($DATA['GET']) - 1 === $KEY) ? '' : 'OR ');
             }
             $DB->query($SQL);
         }

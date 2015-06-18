@@ -50,7 +50,7 @@
             return $PANEL;
         }
         
-        public static function getTBODY(){
+        public static function tbody(){
             $DB = portal::database();
             $DB->query("SELECT TEMPLATES.ID,CLASS_NAME,TYPE_NAME,TEMPLATES.LAST_MODIFIED FROM TEMPLATES LEFT JOIN CLASSES ON CLASSES.ID = CLASS_ID LEFT JOIN TYPES ON TYPES.ID = TYPE_ID ORDER BY ? ?",array($_GET['orderBy'],$_GET['order']));
             
@@ -78,11 +78,11 @@
             return $TBODY;
         }
         
-        public static function insertTemplate($DATA){
+        public static function insert($DATA){
             $TYPE = array(
                 'TYPE_NAME'=>NULL
             );
-            foreach($DATA AS $KEY=>$VALUE){
+            foreach($DATA['POST'] AS $KEY=>$VALUE){
                 $TYPE[$KEY] = $VALUE;
             }
             $DB = portal::database();
@@ -95,17 +95,17 @@
             }
         }
         
-        public static function updateTemplate($TYPE,$DATA){
+        public static function update($DATA){
             $DB = portal::database();
-            $SQL = "UPDATE TYPES SET TYPE_NAME = '".$DATA['TYPE_NAME']."', LAST_MODIFIED = NOW()+0 WHERE TYPE_NAME = '".$TYPE."'";
+            $SQL = "UPDATE TYPES SET TYPE_NAME = '".$DATA['POST']['TYPE_NAME']."', LAST_MODIFIED = NOW()+0 WHERE TYPE_NAME = '".$DATA['GET']."'";
             $DB->query($SQL);
         }
         
-        public static function deleteTemplate($TYPES){
+        public static function deleteTemplate($DATA){
             $DB = portal::database();
             $SQL = "DELETE FROM TYPES WHERE ";
-            foreach($TYPES AS $KEY=>$VALUE){
-                $SQL .= "TYPE_NAME = '".$VALUE."' ".((count($TYPES) - 1 === $KEY) ? '' : 'OR ');
+            foreach($DATA['GET'] AS $KEY=>$VALUE){
+                $SQL .= "TYPE_NAME = '".$VALUE."' ".((count($DATA['GET']) - 1 === $KEY) ? '' : 'OR ');
             }
             $DB->query($SQL);
         }
