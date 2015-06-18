@@ -16,126 +16,6 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
         <script src="libraries/selectable.js"></script>
         <script src="libraries/elevatezoom-master/jquery.elevatezoom.js"></script>
-        <script>
-            $(document).ready(function(){
-                $('.selectable').selectable();
-                $('tr img').mouseenter(function(event){
-                    event.stopPropagation();
-
-                    $('.zoomContainer').remove();
-
-                    switch($(this).prop('class')){
-                        case 'imgA':
-                            $(this).elevateZoom({zoomWindowOffetx:206,zoomWindowPosition:2,zoomWindowWidth:300,zoomWindowHeight:300});
-                            break;
-
-                        case 'imgB':
-                            $(this).elevateZoom({zoomWindowOffetx:103,zoomWindowPosition:2,zoomWindowWidth:300,zoomWindowHeight:300});
-                            break;
-
-                        case 'imgC':
-                            $(this).elevateZoom({zoomWindowPosition:2,zoomWindowWidth:300,zoomWindowHeight:300});
-                            break;
-                    }
-                });
-                $('.openListing').click(function(event){
-                    event.stopPropagation();
-                    event.preventDefault();
-                });
-                $('tr').click(function(){
-                    if($('#edit').is(':visible')){
-                        $('#edit').slideUp();
-                    }
-                });
-                $('.advanced_control').click(function(event){
-                    event.preventDefault();
-                    $(this).blur();
-                    switch($(this).attr('href')){
-                        case 'select_all':
-                            $.each($('tr').find(':checkbox'),function(){
-                                $(this).prop("checked",true);
-                                $(this).closest('tr').addClass('active');
-                            });
-                            break;
-                        case 'deselect_all':
-                            $.each($('tr').find(':checkbox'),function(){
-                                $(this).prop("checked",false);
-                                $(this).closest('tr').removeClass('active');
-                            });
-                            break;
-                        case 'new':
-                            if($('#new').is(':visible')){
-                                $('#new').slideUp();
-                            }
-                            else{
-                                $('#new').slideUp();
-                                $('#edit').slideUp();
-                                $('#new').slideToggle();
-                            }
-                            break;
-                        case 'newTemplate':
-                            var checked = getChecked();
-                            var w = window.open('views/templateWindow.php?action=new','newwindow','width=800,height=900,scrollbars=yes,menubar=no');
-                            w.focus();
-                            break;
-                        case 'edit':
-                            var checked = getChecked();
-                            if(checked.length > 1){
-                                alert('You can only edit one row at a time!');
-                                return;
-                            }
-                            else if(checked.length === 0){
-                                alert('In order to edit a row, please select one.');
-                                return;
-                            }
-                            $('#NAME').text(checked[0]);
-                            $('#edit form').attr('action','libraries/update.php?page=<?=(isset($_GET['subnav']) ? $_GET['subnav'] : '')?>&action=update&names='+checked[0]);
-                            if($('#edit').is(':visible')){
-                                $('#edit').slideUp();
-                            }
-                            else{
-                                $('#new').slideUp();
-                                $('#edit').slideUp();
-                                $('#edit').slideToggle();
-                            }
-                            break;
-                        case 'editTemplate':
-                            var checked = getChecked();
-                            if(checked.length > 1){
-                                alert('You can only edit one row at a time!');
-                                return;
-                            }
-                            else if(checked.length === 0){
-                                alert('In order to edit a row, please select one.');
-                                return;
-                            }
-                            var w = window.open('views/templateWindow.php?action=edit&template='+checked[0],'newwindow','width=800,height=900,scrollbars=yes,menubar=no');
-                            w.focus();
-                            break;
-                        case 'delete':
-                            var checked = getChecked();
-                            if(checked.length === 0){
-                                alert('In order to delete a row, please select one.');
-                                return;
-                            }
-                            if(confirm("Are you sure you want to delete the selected items?")){
-                                window.location.href = "libraries/update.php?page=<?=(isset($_GET['subnav']) ? $_GET['subnav'] : '')?>&action=delete&names="+JSON.stringify(checked);
-                            }
-                            break;
-                    }
-                });
-            });
-
-            function getChecked(){
-                var checked = new Array();
-
-                $.each($('tr').find('.checkbox:checked'),function(){
-                    checked.push( $(this).val() );
-                });
-
-                return checked;
-            }
-        </script>
     </head>
     <body>
         <div class="col-lg-12">
@@ -163,7 +43,14 @@
                             </ul>
 
                             <ul class="nav navbar-nav navbar-right">
-                                <li><a href="libraries/gate.php?portal=close">Sign Out</a></li>
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Currently signed in as <?=$_SESSION['USER_NAME']?> <span class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="#">User Profile</a></li>
+                                        <li role="separator" class="divider"></li>
+                                        <li><a href="libraries/warp.php?nav=portal&action=signOut">Sign Out</a></li>
+                                    </ul>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -181,20 +68,17 @@
                 else{
             ?>
             <div class="container">
-                <form method="post" action="libraries/gate.php?portal=open" style="padding-top:35vh;" autocomplete="off">
+                <form method="post" action="libraries/warp.php?nav=portal&action=signIn" style="padding-top:35vh;" autocomplete="off">
                     <div class="col-lg-4 col-lg-offset-4">
                         <!--<img style="width:100%;padding-bottom:15px;" src="images/logo.png">-->
 
                         <input type="text" name="USER_NAME" class="form-control" autocomplete="off">
 
-                        <input type="password" name="USER_PASS" class="form-control" autocomplete="off">
+                        <input type="password" name="USER_PASSWORD" class="form-control" autocomplete="off">
 
                         <button type="submit" class="btn btn-default form-control">Sign In</button>
                         <?php
-                            if(isset($_SESSION['ERR_MSG'])){
-                                echo '<div class="alert alert-danger text-center" role="alert">'.$_SESSION['ERR_MSG'].'</div>';
-                                unset($_SESSION['ERR_MSG']);
-                            }
+                            portal::getMsg();
                         ?>
                     </div>
                 </form>

@@ -1,28 +1,8 @@
 <?php
     $SUBNAV = isset($_GET['subnav']) ? $_GET['subnav'] : NULL;
     $LIST = array(
-        'Template' => array(
-            'subnav' => 'template',
-            'params' => '&orderBy=ID&order=ASC'
-        ),
-        'Classifications' => array(
-            'subnav' => 'classes',
-            'params' => '&orderBy=ID&order=ASC'
-        ),
-        'Types' => array(
-            'subnav' => 'types',
-            'params' => '&orderBy=ID&order=ASC'
-        ),
-        'Attributes' => array(
-            'subnav' => 'attributes',
-            'params' => '&orderBy=ID&order=ASC'
-        ),
         'User Account Control' => array(
             'subnav' => 'users',
-            'params' => '&orderBy=ID&order=ASC'
-        ),
-        'User Types' => array(
-            'subnav' => 'userTypes',
             'params' => '&orderBy=ID&order=ASC'
         )
     );

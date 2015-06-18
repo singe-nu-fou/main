@@ -1,3 +1,3 @@
 <?php
-    portal::getErrMsg();
+    portal::getMsg();
     echo "home";
