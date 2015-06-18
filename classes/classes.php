@@ -4,14 +4,14 @@
             $PANEL = '<div id="new" class="panel panel-default" style="margin-bottom:0px;">
                         <div class="panel-heading">New Class</div>
                         <div class="panel-body">
-                            <form method="POST" action="libraries/update.php">
+                            <form method="POST" action="libraries/update.php?page=classes&action=new">
                                 <div class="row">
                                     <div class="col-lg-3">
                                         <div class="input-group">
                                             <span class="input-group-addon">
                                                 Class Name
                                             </span>
-                                            <input type="text" name="USER_NAME" class="form-control">
+                                            <input type="text" name="CLASS_NAME" class="form-control">
                                         </div>
                                     </div>
                                     <div class="col-lg-3">
@@ -27,20 +27,20 @@
         
         public static function editClass(){
             $PANEL = '<div id="edit" class="panel panel-default" style="margin-bottom:0px;">
-                        <div class="panel-heading">Edit Class - <span id="CLASS_NAME"></span></div>
+                        <div class="panel-heading">Edit Class - <span id="NAME"></span></div>
                         <div class="panel-body">
-                            <form method="POST" action="?'.$_SERVER['QUERY_STRING'].'">
+                            <form method="POST" action="">
                                 <div class="row">
                                     <div class="col-lg-4">
                                         <div class="input-group">
                                             <span class="input-group-addon">
                                                 Class Name
                                             </span>
-                                            <input type="password" class="form-control">
+                                            <input name="CLASS_NAME" type="text" class="form-control">
                                         </div>
                                     </div>
-                                    <div class="col-lg-4 col-lg-offset-4">
-                                        <button class="btn btn-default form-control">Edit Users</button>
+                                    <div class="col-lg-4">
+                                        <button class="btn btn-default form-control">Edit Class</button>
                                     </div>
                                 </div>
                             <form>
@@ -59,7 +59,7 @@
             while($RESULT = $DB->fetch_assoc()){
                 $TBODY .= '<tr>
                                <td>
-                                   <input type="checkbox" class="checkbox" value="'.$RESULT['ID'].'" style="display:none;">'.$RESULT['ID'].'
+                                   <input type="checkbox" class="checkbox" value="'.$RESULT['CLASS_NAME'].'" style="display:none;">'.$RESULT['ID'].'
                                </td>
                                <td>
                                    '.$RESULT['CLASS_NAME'].'
@@ -73,5 +73,37 @@
             $TBODY .= "</tbody>";
             
             return $TBODY;
+        }
+        
+        public static function insertClass($DATA){
+            $CLASS = array(
+                'CLASS_NAME'=>NULL
+            );
+            foreach($DATA AS $KEY=>$VALUE){
+                $CLASS[$KEY] = $VALUE;
+            }
+            $DB = portal::database();
+            $DB->query("SELECT * FROM CLASSES WHERE CLASS_NAME = ?",array($CLASS['CLASS_NAME']));
+            if($results = $DB->fetch_assoc()){
+                $_SESSION['ERR_MSG'] = "Class already exists!";
+            }
+            else{
+                $DB->query("INSERT INTO CLASSES (CLASS_NAME) VALUES (?)",array($CLASS['CLASS_NAME']));
+            }
+        }
+        
+        public static function updateClass($CLASS,$DATA){
+            $DB = portal::database();
+            $SQL = "UPDATE CLASSES SET CLASS_NAME = '".$DATA['CLASS_NAME']."', LAST_MODIFIED = NOW()+0 WHERE CLASS_NAME = '".$CLASS."'";
+            $DB->query($SQL);
+        }
+        
+        public static function deleteClass($CLASSES){
+            $DB = portal::database();
+            $SQL = "DELETE FROM CLASSES WHERE ";
+            foreach($CLASSES AS $KEY=>$VALUE){
+                $SQL .= "CLASS_NAME = '".$VALUE."' ".((count($CLASSES) - 1 === $KEY) ? '' : 'OR ');
+            }
+            $DB->query($SQL);
         }
     }

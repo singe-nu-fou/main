@@ -14,7 +14,7 @@
         
         public function signIn($USER_NAME,$USER_PASS){
             $db = self::database();
-            $db->query("SELECT USER_NAME,USER_PASS,USER_TYPE,USER_LOGIN FROM USER_ACCOUNTS JOIN USER_TYPES ON USER_TYPE_ID = USER_TYPES.ID WHERE USER_NAME = ?",array($USER_NAME));
+            $db->query("SELECT USER_NAME,USER_PASS,USER_TYPE_NAME,USER_LOGIN FROM USER_ACCOUNTS JOIN USER_TYPES ON USER_TYPE_ID = USER_TYPES.ID WHERE USER_NAME = ?",array($USER_NAME));
             $result = $db->fetch_obj();
             if($USER_PASS !== $result->USER_PASS){
                 $_SESSION['ERR_MSG'] = 'Incorrect username or password.';
@@ -106,9 +106,11 @@
         
         public static function userPassValid($USER_PASS){
             if(strlen(trim($USER_PASS)) === 0 || strlen(trim($USER_PASS)) < 6){
+                $_SESSION['ERR_MSG'] .= 'Password must be at least six characters long.';
                 return true;
             }
             if(count(explode(' ',$USER_PASS)) !== 1){
+                $_SESSION['ERR_MSG'] .= 'Password cannot contain spaces.';
                 return true;
             }
             return false;

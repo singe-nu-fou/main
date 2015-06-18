@@ -18,7 +18,7 @@
             
             if($SPECIAL_CONTROL !== NULL){
                 foreach($SPECIAL_CONTROL AS $KEY=>$VALUE){
-                    $this->SPECIAL_CONTROL .= router::route($HEADER,$VALUE);
+                    $this->SPECIAL_CONTROL .= router::route($_GET['subnav'],$VALUE);
                 }
             }
             
@@ -30,7 +30,7 @@
             }
             
             $this->TABLE .= '</tr></thead>';
-            $this->TABLE .= router::route($HEADER,'TBODY');
+            $this->TABLE .= router::route($_GET['subnav'],'TBODY');
             $this->TABLE .= '</table>';
         }
         

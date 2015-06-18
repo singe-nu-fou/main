@@ -1,16 +1,36 @@
+<?php
+    $SUBNAV = isset($_GET['subnav']) ? $_GET['subnav'] : NULL;
+    $LIST = array(
+        'Classifications' => array(
+            'subnav' => 'classes',
+            'params' => '&orderBy=ID&order=ASC'
+        ),
+        'Types' => array(
+            'subnav' => 'types',
+            'params' => '&orderBy=ID&order=ASC'
+        ),
+        'Attributes' => array(
+            'subnav' => 'attributes',
+            'params' => '&orderBy=ID&order=ASC'
+        ),
+        'User Account Control' => array(
+            'subnav' => 'users',
+            'params' => '&orderBy=ID&order=ASC'
+        ),
+        'User Types' => array(
+            'subnav' => 'userTypes',
+            'params' => '&orderBy=ID&order=ASC'
+        )
+    );
+?>
 <div class="col-lg-2">
     <div class="panel panel-default">
         <ul class="list-group" style="list-style-type:none;">
-            <!--<li><a class="<?=(isset($_GET['subnav']) && $_GET['subnav'] === 'adsReport') ? 'active' : ''?> list-group-item" href="?nav=admin&subnav=adsReport">Ads Report</a></li>
-            <li><a class="<?=(isset($_GET['subnav']) && $_GET['subnav'] === 'itemAttributes') ? 'active' : ''?> list-group-item" href="?nav=admin&subnav=itemAttributes">Item Attributes</a></li>
-            <li><a class="<?=(isset($_GET['subnav']) && $_GET['subnav'] === 'itemClasses') ? 'active' : ''?> list-group-item" href="?nav=admin&subnav=itemClasses">Item Classes</a></li>
-            <li><a class="<?=(isset($_GET['subnav']) && $_GET['subnav'] === 'itemTypes') ? 'active' : ''?> list-group-item" href="?nav=admin&subnav=itemTypes">Item Types</a></li>
-            <li><a class="<?=(isset($_GET['subnav']) && $_GET['subnav'] === 'jobManagement') ? 'active' : ''?> list-group-item" href="?nav=admin&subnav=jobManagement">Job Management</a></li>
-            <li><a class="<?=(isset($_GET['subnav']) && $_GET['subnav'] === 'metrics') ? 'active' : ''?> list-group-item" href="?nav=admin&subnav=metrics">Metrics</a></li>-->
-            <li><a class="<?=(isset($_GET['subnav']) && $_GET['subnav'] === 'attributes') ? 'active' : ''?> list-group-item" href="?nav=admin&subnav=attributes&orderBy=ID&order=ASC">Attributes</a></li>
-            <li><a class="<?=(isset($_GET['subnav']) && $_GET['subnav'] === 'classes') ? 'active' : ''?> list-group-item" href="?nav=admin&subnav=classes&orderBy=ID&order=ASC">Classifications</a></li>
-            <li><a class="<?=(isset($_GET['subnav']) && $_GET['subnav'] === 'types') ? 'active' : ''?> list-group-item" href="?nav=admin&subnav=types&orderBy=ID&order=ASC">Types</a></li>
-            <li><a class="<?=(isset($_GET['subnav']) && $_GET['subnav'] === 'users') ? 'active' : ''?> list-group-item" href="?nav=admin&subnav=users&orderBy=ID&order=ASC">Users</a></li>
+            <?php
+                foreach($LIST AS $KEY=>$VALUE){
+                    echo '<li><a class="'.((isset($VALUE['subnav']) && $SUBNAV === $VALUE['subnav']) ? 'active ' : '').'list-group-item" href="?nav=admin&subnav='.$VALUE['subnav'].$VALUE['params'].'">'.$KEY.'</a></li>';
+                }
+            ?>
         </ul>
     </div>
 </div>
@@ -18,7 +38,7 @@
     <?php
         portal::getErrMsg();
         if(isset($_GET['subnav'])){
-            include('views/'.$_GET['subnav'].'.php');
+            include('views/'.$SUBNAV.'.php');
         }
     ?>
 </div>

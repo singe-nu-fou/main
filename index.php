@@ -16,7 +16,108 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
         <script src="libraries/selectable.js"></script>
         <script src="libraries/elevatezoom-master/jquery.elevatezoom.js"></script>
-        <script src="libraries/common.js"></script>
+        <script>
+            $(document).ready(function(){
+                $('.selectable').selectable();
+                $('tr img').mouseenter(function(event){
+                    event.stopPropagation();
+
+                    $('.zoomContainer').remove();
+
+                    switch($(this).prop('class')){
+                        case 'imgA':
+                            $(this).elevateZoom({zoomWindowOffetx:206,zoomWindowPosition:2,zoomWindowWidth:300,zoomWindowHeight:300});
+                            break;
+
+                        case 'imgB':
+                            $(this).elevateZoom({zoomWindowOffetx:103,zoomWindowPosition:2,zoomWindowWidth:300,zoomWindowHeight:300});
+                            break;
+
+                        case 'imgC':
+                            $(this).elevateZoom({zoomWindowPosition:2,zoomWindowWidth:300,zoomWindowHeight:300});
+                            break;
+                    }
+                });
+                $('.openListing').click(function(event){
+                    event.stopPropagation();
+                    event.preventDefault();
+                });
+                $('tr').click(function(){
+                    if($('#edit').is(':visible')){
+                        $('#edit').slideUp();
+                    }
+                });
+                $('.advanced_control').click(function(event){
+                    event.preventDefault();
+                    $(this).blur();
+                    switch($(this).attr('href')){
+                        case 'select_all':
+                            $.each($('tr').find(':checkbox'),function(){
+                                $(this).prop("checked",true);
+                                $(this).closest('tr').addClass('active');
+                            });
+                            break;
+                        case 'deselect_all':
+                            $.each($('tr').find(':checkbox'),function(){
+                                $(this).prop("checked",false);
+                                $(this).closest('tr').removeClass('active');
+                            });
+                            break;
+                        case 'new':
+                            if($('#new').is(':visible')){
+                                $('#new').slideUp();
+                            }
+                            else{
+                                $('#new').slideUp();
+                                $('#edit').slideUp();
+                                $('#new').slideToggle();
+                            }
+                            break;
+                        case 'edit':
+                            var checked = getChecked();
+                            if(checked.length > 1){
+                                alert('You can only edit one row at a time!');
+                                return;
+                            }
+                            else if(checked.length === 0){
+                                alert('In order to edit a row, please select one.');
+                                return;
+                            }
+                            $('#NAME').text(checked[0]);
+                            $('#edit form').attr('action','libraries/update.php?page=<?=(isset($_GET['subnav']) ? $_GET['subnav'] : '')?>&action=edit&names='+checked[0]);
+                            if($('#edit').is(':visible')){
+                                $('#edit').slideUp();
+                            }
+                            else{
+                                $('#new').slideUp();
+                                $('#edit').slideUp();
+                                $('#edit').slideToggle();
+                            }
+                            break;
+                        case 'delete':
+                            var checked = getChecked();
+                            if(checked.length === 0){
+                                alert('In order to delete a row, please select one.');
+                                return;
+                            }
+                            if(confirm("Are you sure you want to delete the selected items?")){
+                                window.location.href = "libraries/update.php?page=<?=(isset($_GET['subnav']) ? $_GET['subnav'] : '')?>&action=delete&names="+JSON.stringify(checked);
+                            }
+                            break;
+                    }
+                });
+            });
+
+            function getChecked(){
+                var checked = new Array();
+
+                $.each($('tr').find('.checkbox:checked'),function(){
+                    checked.push( $(this).val() );
+                });
+
+                return checked;
+            }
+        </script>
     </head>
     <body>
         <div class="col-lg-12">
