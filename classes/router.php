@@ -12,6 +12,8 @@
                     return self::types($ACTION);
                 case 'attributes':
                     return self::attributes($ACTION);
+                case 'template':
+                    return self::templates($ACTION);
             }
         }
         
@@ -116,6 +118,27 @@
                 case 'delete':
                     if(isset($_GET['names'])){
                         return attributes::deleteAttribute(json_decode($_GET['names']));
+                    }
+                    break;
+            }
+        }
+        
+        private static function templates($ACTION){
+            require_once('template.php');
+            switch($ACTION){
+                case 'TBODY':
+                    return template::getTBODY();
+                case 'New Template':
+                    return template::newTemplate();
+                case 'Edit Template':
+                    return template::editTemplate();
+                case 'new':
+                    return template::insertTemplate($_POST);
+                case 'edit':
+                    return template::updateTemplate($_GET['names'],$_POST);
+                case 'delete':
+                    if(isset($_GET['names'])){
+                        return template::deleteTemplate(json_decode($_GET['names']));
                     }
                     break;
             }
