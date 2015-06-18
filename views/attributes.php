@@ -15,7 +15,7 @@
     );
     $THEAD = array(
         'ID'=>'ID',
-        'Type'=>'ATTRIBUTE_NAME',
+        'Attribute'=>'ATTRIBUTE_NAME',
         'Last Modified'=>'LAST_MODIFIED'
     );
     $TABLE = new table($HEADER,$ADVANCED_CONTROL,$SPECIAL_CONTROL,$THEAD,'selectable');
