@@ -39,17 +39,17 @@ $(document).ready(function(){
                     $(this).closest('tr').removeClass('active');
                 });
                 break;
-            case 'new_user':
-                if($('#newUser').is(':visible')){
-                    $('#newUser').slideUp();
+            case 'new':
+                if($('#new').is(':visible')){
+                    $('#new').slideUp();
                 }
                 else{
-                    $('#newUser').slideUp();
-                    $('#editUser').slideUp();
-                    $('#newUser').slideToggle();
+                    $('#new').slideUp();
+                    $('#edit').slideUp();
+                    $('#new').slideToggle();
                 }
                 break;
-            case 'edit_user':
+            case 'edit':
                 var checked = getChecked();
                 if(checked.length > 1){
                     alert('You can only edit one user at a time!');
@@ -59,28 +59,22 @@ $(document).ready(function(){
                     alert('In order to edit a user, please select one.');
                     return;
                 }
+                if($('#edit').is(':visible')){
+                    $('#edit').slideUp();
+                }
                 else{
-                    $('#USER_NAME').text(checked[0]);
-                    $('#editUser form').attr('action','libraries/update.php?action=editUser&users='+checked[0]);
-                    if($('#editUser').is(':visible')){
-                        $('#editUser').slideUp();
-                    }
-                    else{
-                        $('#newUser').slideUp();
-                        $('#editUser').slideUp();
-                        $('#editUser').slideToggle();
-                    }
+                    $('#new').slideUp();
+                    $('#edit').slideUp();
+                    $('#edit').slideToggle();
                 }
                 break;
-            case 'delete_users':
+            case 'delete':
                 var checked = getChecked();
                 if(checked.length === 0){
-                    alert('In order to delete a user, please select one.');
+                    alert('In order to delete an item, please select one.');
                     return;
                 }
-                if(confirm("Are you sure you want to delete the selected users?")){
-                    window.location.href = "libraries/update.php?action=deleteUsers&users="+JSON.stringify(checked);
-                }
+                confirm("Are you sure you want to delete the selected items?");
                 break;
         }
     });

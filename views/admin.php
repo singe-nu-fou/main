@@ -6,9 +6,10 @@
             <li><a class="<?=(isset($_GET['subnav']) && $_GET['subnav'] === 'itemClasses') ? 'active' : ''?> list-group-item" href="?nav=admin&subnav=itemClasses">Item Classes</a></li>
             <li><a class="<?=(isset($_GET['subnav']) && $_GET['subnav'] === 'itemTypes') ? 'active' : ''?> list-group-item" href="?nav=admin&subnav=itemTypes">Item Types</a></li>
             <li><a class="<?=(isset($_GET['subnav']) && $_GET['subnav'] === 'jobManagement') ? 'active' : ''?> list-group-item" href="?nav=admin&subnav=jobManagement">Job Management</a></li>
-            <li><a class="<?=(isset($_GET['subnav']) && $_GET['subnav'] === 'metrics') ? 'active' : ''?> list-group-item" href="?nav=admin&subnav=metrics">Metrics</a></li>
-            <li><a class="<?=(isset($_GET['subnav']) && $_GET['subnav'] === 'payrollReports') ? 'active' : ''?> list-group-item" href="?nav=admin&subnav=payrollReports">Payroll Reports</a></li>
-            <li><a class="<?=(isset($_GET['subnav']) && $_GET['subnav'] === 'scheduleManagement') ? 'active' : ''?> list-group-item" href="?nav=admin&subnav=scheduleManagement">Schedule Management</a></li>-->
+            <li><a class="<?=(isset($_GET['subnav']) && $_GET['subnav'] === 'metrics') ? 'active' : ''?> list-group-item" href="?nav=admin&subnav=metrics">Metrics</a></li>-->
+            <li><a class="<?=(isset($_GET['subnav']) && $_GET['subnav'] === 'attributes') ? 'active' : ''?> list-group-item" href="?nav=admin&subnav=attributes&orderBy=ID&order=ASC">Attributes</a></li>
+            <li><a class="<?=(isset($_GET['subnav']) && $_GET['subnav'] === 'classes') ? 'active' : ''?> list-group-item" href="?nav=admin&subnav=classes&orderBy=ID&order=ASC">Classifications</a></li>
+            <li><a class="<?=(isset($_GET['subnav']) && $_GET['subnav'] === 'types') ? 'active' : ''?> list-group-item" href="?nav=admin&subnav=types&orderBy=ID&order=ASC">Types</a></li>
             <li><a class="<?=(isset($_GET['subnav']) && $_GET['subnav'] === 'users') ? 'active' : ''?> list-group-item" href="?nav=admin&subnav=users&orderBy=ID&order=ASC">Users</a></li>
         </ul>
     </div>
