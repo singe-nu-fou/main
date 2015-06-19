@@ -2,18 +2,21 @@
     class table{
         public $HEADER;
         public $CONTROL_PANEL;
+        public $MODE;
         public $TABLE;
         public $FOOTER = '<div class="panel-footer"></div>';
         
-        public function __construct($TITLE,$CONTROL_PANEL,$THEAD,$SELECTABLE = ''){
+        public function __construct($TITLE,$CONTROL_PANEL,$MODE = NULL,$THEAD,$SELECTABLE = ''){
             $this->HEADER = '<div class="panel-heading">'.$TITLE.'</div>';
             $this->CONTROL_PANEL = '<ul class="nav nav-pills nav-justified">';
             
             foreach($CONTROL_PANEL AS $KEY=>$VALUE){
-                $this->CONTROL_PANEL .= '<li><a ID="'.$VALUE.'" class="CONTROL_PANEL list-group-item">'.$KEY.'</a></li>';
+                $this->CONTROL_PANEL .= '<li><a '.((isset($VALUE['href'])) ? 'href="'.$VALUE['href'].'"' : ((isset($VALUE['ID'])) ? 'id="'.$VALUE['ID'].'"' : '')).' class="CONTROL_PANEL list-group-item">'.$KEY.'</a></li>';
             }
             
             $this->CONTROL_PANEL .= '</ul>';
+            
+            $this->MODE = (isset($MODE)) ? portal::warp($_GET['subnav'],$MODE) : '';
             
             $this->TABLE = '<table class="'.$SELECTABLE.' table table-hover">';
             $this->TABLE .= '<thead><tr>';
@@ -28,7 +31,7 @@
         }
         
         public function getTable(){
-            return '<div class="panel panel-default">'.$this->HEADER.$this->CONTROL_PANEL.$this->TABLE.$this->FOOTER.'</div>';
+            return '<div class="panel panel-default">'.$this->HEADER.$this->CONTROL_PANEL.$this->MODE.$this->TABLE.$this->FOOTER.'</div>';
         }
         
         public static function orderBy($COLUMN){

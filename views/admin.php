@@ -22,7 +22,7 @@
     <?php
         portal::getMsg();
         if(isset($_GET['subnav'])){
-            include('views/'.$SUBNAV.'.php');
+            portal::navigate($_GET['subnav']);
         }
     ?>
 </div>

@@ -16,6 +16,11 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
         <script src="libraries/selectable.js"></script>
         <script src="libraries/elevatezoom-master/jquery.elevatezoom.js"></script>
+        <script>
+            $(document).ready(function(){
+                $('.selectable').selectable();
+            });
+        </script>
     </head>
     <body>
         <div class="col-lg-12">
@@ -58,8 +63,9 @@
             </div>
             <div class="row" style="padding-top:60px;">
                 <?php
+                    portal::getMsg();
                     if(isset($_GET['nav'])){
-                        include('views/'.$_GET['nav'].'.php');
+                        portal::navigate($_GET['nav']);
                     }
                 ?>
             </div>

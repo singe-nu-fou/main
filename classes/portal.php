@@ -12,6 +12,11 @@
             return self::$ACTION($DATA);
         }
         
+        public static function navigate($NAV){
+            $URL = 'views/'.$NAV.'.php';
+            (file_exists($URL)) ? include($URL) : header('HTTP/1.0 404 Not Found');
+        }
+        
         public static function database(){
             require_once('Zebra_Database\Zebra_Database.php');
             $connection = new Zebra_Database();
@@ -22,10 +27,19 @@
         }
         
         public static function signIn($DATA){
+            if(self::isSignedIn()){
+                return '../?nav=home';
+            }
+            require_once('users.php');
+            if(is_array($DATA['POST'])){
+                extract($DATA['POST']);
+            }
+            else{
+                $_SESSION['ERROR_MSG'] = 'Incorrect username or password.';
+                return '../';
+            }
             $DB = self::database();
-            var_dump($DATA);
-            //exit;
-            if(portal::validUsername($DATA['POST']['USER_NAME']) && portal::validPassword($DATA['POST']['USER_PASSWORD'])){
+            if(users::validUsername($USER_NAME) && users::validPassword($USER_PASSWORD)){
                 $DB->query("SELECT USER_ACCOUNT.ID,USER_NAME,USER_PASSWORD,USER_TYPE,LAST_LOGIN 
                             FROM USER_ACCOUNT 
                             LEFT JOIN USER_TYPE ON USER_TYPE_ID = USER_TYPE.ID 
@@ -55,46 +69,24 @@
             return '../';
         }
         
-        public static function validUsername($USER_NAME){
-            $_SESSION['ERROR_MSG'] = 'Invalid username: ';
-            switch(true){
-                case strlen(trim($USER_NAME)) === 0:
-                case strlen(trim($USER_NAME)) < 6:
-                case count(explode(' ',$USER_NAME)) !== 1:
-                    $_SESSION['ERROR_MSG'] .= "Username must be at least six characters long, cannot contain special character or underscores, and cannot contain spaces.";
-                    return false;
-            }
-            unset($_SESSION['ERROR_MSG']);
-            return true;
-        }
-        
-        public static function validPassword($USER_PASS){
-            $_SESSION['ERROR_MSG'] = "Invalid password: ";
-            switch(true){
-                case strlen(trim($USER_PASS)) === 0:
-                case strlen(trim($USER_PASS)) < 6:
-                case count(explode(' ',$USER_PASS)) !== 1:
-                    $_SESSION['ERROR_MSG'] .= 'Passwords must be at least six characters long and contain no spaces!';
-                    return false;
-            }
-            unset($_SESSION['ERROR_MSG']);
-            return true;
-        }
-        
         public static function isSignedIn(){
-            if(isset($_SESSION['USER_NAME']) && self::userNameExists($_SESSION['ID'],$_SESSION['USER_NAME'])){
+            require_once('users.php');
+            if(isset($_SESSION['USER_NAME']) && users::userNameExists($_SESSION['ID'],$_SESSION['USER_NAME'])){
                 return true;
             }
             return false;
         }
         
-        public static function userNameExists($ID,$USER_NAME){
-            $DB = portal::database();
-            $DB->query("SELECT * FROM USER_ACCOUNT LEFT JOIN USER_NAME ON USER_NAME_ID = USER_NAME.ID WHERE USER_ACCOUNT.ID = ? AND USER_NAME = ?",array($ID,$USER_NAME));
-            if($DB->fetch_assoc()){
-                return true;
+        public static function scrubString($NEEDLE,$REPLACE,$HAYSTACK){
+            if(is_array($NEEDLE)){
+                $NEEDLES = $NEEDLE;
+                unset($NEEDLE);
+                foreach($NEEDLES AS $THREAD=>$NEEDLE){
+                    $HAYSTACK = str_replace($NEEDLE,$REPLACE,$HAYSTACK);
+                }
+                return $HAYSTACK;
             }
-            return false;
+            return str_replace($NEEDLE,$REPLACE,$HAYSTACK);
         }
         
         public static function getMsg(){

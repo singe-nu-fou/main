@@ -1,5 +1,5 @@
-#new,#edit{
-    display:none;
+table.selectable{
+    cursor:pointer;
 }
 
 .input-group-addon{
