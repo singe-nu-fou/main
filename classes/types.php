@@ -141,8 +141,8 @@
         
         public static function insert($DATA){
             extract($DATA['POST']);
-            if(self::isRealType(array('NAME'=>$TYPE_NAME)) || preg_match('/[\'^£$%&*()}{@#~?><>,.|=+¬-]/',$TYPE_NAME)){
-                $_SESSION['ERROR_MSG'] = 'Types cannot contain special characters, and cannot be the same as an existing classification.';
+            if(self::isRealType(array('NAME'=>$TYPE_NAME))){
+                $_SESSION['ERROR_MSG'] = 'Types cannot be the same as an existing type.';
                 return;
             }
             $DB = portal::database();
@@ -152,8 +152,8 @@
         public static function update($DATA){
             extract($DATA['POST']);
             foreach($TYPES AS $ID=>$TYPE){
-                if(self::isRealType(array('NAME'=>$TYPE['TYPE_NAME'])) || preg_match('/[\'^£$%&*()}{@#~?><>,.|=+¬-]/',$TYPE['TYPE_NAME'])){
-                    $_SESSION['ERROR_MSG'] = 'Types cannot contain special characters, and cannot be the same as an existing classification.';
+                if(self::isRealType(array('NAME'=>$TYPE['TYPE_NAME']))){
+                    $_SESSION['ERROR_MSG'] = 'Types cannot be the same as an existing type.';
                 }
                 else{
                     $DB = portal::database();

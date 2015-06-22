@@ -21,6 +21,16 @@
                 $('.selectable').selectable();
                 $('.CONTROL_PANEL').click(function(event){
                     switch($(this).attr('ID')){
+                        case 'view':
+                            event.preventDefault();
+                            var checked = getChecked();
+                            if(checked.length < 1){
+                                alert('Please select one row in order to view.');
+                            }
+                            else{
+                                window.location.href = $(this).attr('href')+'&id='+JSON.stringify(checked);
+                            }
+                            break;
                         case 'edit':
                             event.preventDefault();
                             var checked = getChecked();

@@ -141,8 +141,8 @@
         
         public static function insert($DATA){
             extract($DATA['POST']);
-            if(self::isRealClassification(array('NAME'=>$CLASS_NAME)) || preg_match('/[\'^£$%&*()}{@#~?><>,.|=+¬-]/',$CLASS_NAME)){
-                $_SESSION['ERROR_MSG'] = 'Classifications cannot contain special characters, and cannot be the same as an existing classification.';
+            if(self::isRealClassification(array('NAME'=>$CLASS_NAME))){
+                $_SESSION['ERROR_MSG'] = 'Classifications cannot be the same as an existing classification.';
                 return;
             }
             $DB = portal::database();
@@ -152,8 +152,8 @@
         public static function update($DATA){
             extract($DATA['POST']);
             foreach($CLASSES AS $ID=>$CLASS){
-                if(self::isRealClassification(array('NAME'=>$CLASS['CLASS_NAME'])) || preg_match('/[\'^£$%&*()}{@#~?><>,.|=+¬-]/',$CLASS['CLASS_NAME'])){
-                    $_SESSION['ERROR_MSG'] = 'Classifications cannot contain special characters, and cannot be the same as an existing classification.';
+                if(self::isRealClassification(array('NAME'=>$CLASS['CLASS_NAME']))){
+                    $_SESSION['ERROR_MSG'] = 'Classifications cannot be the same as an existing classification.';
                 }
                 else{
                     $DB = portal::database();

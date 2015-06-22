@@ -1,6 +1,10 @@
 <?php
     $SUBNAV = isset($_GET['subnav']) ? $_GET['subnav'] : NULL;
     $LIST = array(
+        'Templates' => array(
+            'subnav' => 'templates',
+            'params' => '&orderBy=ID&order=ASC'
+        ),
         'Classifications' => array(
             'subnav' => 'classifications',
             'params' => '&orderBy=ID&order=ASC'

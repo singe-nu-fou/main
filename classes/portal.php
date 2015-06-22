@@ -28,6 +28,15 @@
             return $connection;
         }
         
+        public static function databaseOld(){
+            require_once('Zebra_Database\Zebra_Database.php');
+            $connection = new Zebra_Database();
+            $connection->debug = true;
+            $connection->connect('localhost','root','','lister');
+            $connection->set_charset();
+            return $connection;
+        }
+        
         public static function signIn($DATA){
             if(self::isSignedIn()){
                 return '../?nav=home';

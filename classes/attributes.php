@@ -91,20 +91,20 @@
             return $PANEL;
         }
         
-        public static function getUserAttribute($DATA = NULL){
+        public static function getAttribute($DATA = NULL){
             if($DATA !== NULL){
                 extract($DATA);
             }
             $DB = portal::database();
             $SQL = "SELECT * FROM ATTRIBUTES";
             switch(true){
-                case isset($ID) && isset($NAME) && self::isRealUserAttribute($DATA):
+                case isset($ID) && isset($NAME) && self::isRealAttribute($DATA):
                     $DB->query($SQL." WHERE ID = ? AND ATTRIBUTE_NAME = ?",array($ID,$NAME));
                     return $DB->fetch_assoc();
-                case isset($ID) && self::isRealUserAttribute($DATA):
+                case isset($ID) && self::isRealAttribute($DATA):
                     $DB->query($SQL." WHERE ID = ?",array($ID));
                     return $DB->fetch_assoc();
-                case isset($NAME) && self::isRealUserAttribute($DATA):
+                case isset($NAME) && self::isRealAttribute($DATA):
                     $DB->query($SQL." WHERE ATTRIBUTE_NAME = ?",array($NAME));
                     return $DB->fetch_assoc();
                 default:
@@ -114,7 +114,7 @@
             return NULL;
         }
         
-        public static function isRealUserAttribute($DATA){
+        public static function isRealAttribute($DATA){
             if($DATA !== NULL){
                 extract($DATA);
             }
@@ -141,8 +141,8 @@
         
         public static function insert($DATA){
             extract($DATA['POST']);
-            if(self::isRealUserAttribute(array('NAME'=>$ATTRIBUTE_NAME)) || preg_match('/[\'^£$%&*()}{@#~?><>,.|=+¬-]/',$ATTRIBUTE_NAME)){
-                $_SESSION['ERROR_MSG'] = 'Attributes cannot contain special characters, and cannot be the same as an existing attribute.';
+            if(self::isRealAttribute(array('NAME'=>$ATTRIBUTE_NAME))){
+                $_SESSION['ERROR_MSG'] = 'Attributes cannot be the same as an existing attribute.';
                 return;
             }
             $DB = portal::database();
@@ -152,8 +152,8 @@
         public static function update($DATA){
             extract($DATA['POST']);
             foreach($ATTRIBUTES AS $ID=>$ATTRIBUTE){
-                if(self::isRealUserAttribute(array('NAME'=>$ATTRIBUTE['ATTRIBUTE_NAME'])) || preg_match('/[\'^£$%&*()}{@#~?><>,.|=+¬-]/',$ATTRIBUTE['ATTRIBUTE_NAME'])){
-                    $_SESSION['ERROR_MSG'] = 'Attributes cannot contain special characters, and cannot be the same as an existing attribute.';
+                if(self::isRealAttribute(array('NAME'=>$ATTRIBUTE['ATTRIBUTE_NAME']))){
+                    $_SESSION['ERROR_MSG'] = 'Attributes cannot be the same as an existing attribute.';
                 }
                 else{
                     $DB = portal::database();
