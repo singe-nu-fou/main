@@ -11,7 +11,7 @@
             $this->CONTROL_PANEL = '<ul class="nav nav-pills nav-justified">';
             
             foreach($CONTROL_PANEL AS $KEY=>$VALUE){
-                $this->CONTROL_PANEL .= '<li><a '.((isset($VALUE['href'])) ? 'href="'.$VALUE['href'].'"' : ((isset($VALUE['ID'])) ? 'id="'.$VALUE['ID'].'"' : '')).' class="CONTROL_PANEL list-group-item">'.$KEY.'</a></li>';
+                $this->CONTROL_PANEL .= '<li><a'.((isset($VALUE['href'])) ? ' href="'.$VALUE['href'].'"' : '').((isset($VALUE['id'])) ? ' id="'.$VALUE['id'].'"' : '').' class="CONTROL_PANEL list-group-item'.((isset($VALUE['class'])) ? ' '.$VALUE['class'] : '').'">'.$KEY.'</a></li>';
             }
             
             $this->CONTROL_PANEL .= '</ul>';

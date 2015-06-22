@@ -1,17 +1,17 @@
 <?php
-    class userType{
+    class attributes{
         public static function tbody(){
             extract($_GET);
             $DB = portal::database();
             $DB->query('SELECT *
-                        FROM USER_TYPE
+                        FROM ATTRIBUTES
                         ORDER BY '.$orderBy.' '.$order);
             $TBODY = "<tbody>";
             while($RESULT = $DB->fetch_assoc()){
                 extract($RESULT);
                 $TBODY .= '<tr>
                                <td><input type="checkbox" class="checkbox" value="'.$ID.'" style="display:none;">'.$ID.'</td>
-                               <td>'.$USER_TYPE.'</td>
+                               <td>'.$ATTRIBUTE_NAME.'</td>
                                <td>'.date('l, F Y h:i:sA',strtotime($LAST_MODIFIED)).'</td>
                            </tr>';
             }
@@ -21,22 +21,22 @@
         
         public static function create(){
             $PANEL = '<div id="new" class="panel panel-default" style="margin-bottom:0px;">
-                        <div class="panel-heading">New User Type</div>
+                        <div class="panel-heading">New Attribute</div>
                         <div class="panel-body">
-                            <form method="POST" action="libraries/update.php?page=userType&action=insert">
+                            <form method="POST" action="libraries/update.php?page=attributes&action=insert">
                                 <div class="row" style="padding-bottom:15px;">
                                     <div class="col-lg-6 col-lg-offset-3">
                                         <div class="input-group">
                                             <span class="input-group-addon">
-                                                Type
+                                                Attribute
                                             </span>
-                                            <input type="text" name="USER_TYPE" class="form-control">
+                                            <input type="text" name="ATTRIBUTE_NAME" class="form-control">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-3 col-lg-offset-3">
-                                        <button type="submit" class="btn btn-default form-control">Create Type</button>
+                                        <button type="submit" class="btn btn-default form-control">Create Attribute</button>
                                     </div>
                                     <div class="col-lg-3">
                                         <button name="cancel" type="submit" class="btn btn-default form-control">Cancel</button>
@@ -53,33 +53,33 @@
             extract($_GET);
             $IDS = json_decode($id);
             foreach($IDS AS $ID){
-                $SQL_CONCAT[] = " USER_TYPE.ID = ? ";
+                $SQL_CONCAT[] = " ATTRIBUTES.ID = ? ";
             }
-            $DB->query("SELECT ID AS 'USER_TYPE_ID',USER_TYPE
-                        FROM USER_TYPE
+            $DB->query("SELECT ID AS 'ATTRIBUTES_ID',ATTRIBUTE_NAME
+                        FROM ATTRIBUTES
                         WHERE ".implode(' OR ',$SQL_CONCAT),$IDS);
             $RESULTS = $DB->fetch_assoc_all();
             $PANEL = '<div id="new" class="panel panel-default" style="margin-bottom:0px;">
-                        <div class="panel-heading">Edit User Type</div>
+                        <div class="panel-heading">Edit Attribute</div>
                         <div class="panel-body">
-                            <form method="POST" action="libraries/update.php?page=userType&action=update">';
+                            <form method="POST" action="libraries/update.php?page=attributes&action=update">';
             foreach($RESULTS AS $KEY=>$VALUE){
                 extract($VALUE);
                 $PANEL .= '<div class="row" style="padding-bottom:15px;">
-                               <input type="hidden" name="TYPES['.$USER_TYPE_ID.'][USER_TYPE_ID]" value="'.$USER_TYPE_ID.'">
+                               <input type="hidden" name="ATTRIBUTES['.$ATTRIBUTES_ID.'][ATTRIBUTES_ID]" value="'.$ATTRIBUTES_ID.'">
                                <div class="col-lg-6 col-lg-offset-3">
                                    <div class="input-group">
                                        <span class="input-group-addon">
-                                           Type
+                                           Attribute
                                        </span>
-                                       <input type="text" name="TYPES['.$USER_TYPE_ID.'][USER_TYPE]" value="'.$USER_TYPE.'" class="form-control">
+                                       <input type="text" name="ATTRIBUTES['.$ATTRIBUTES_ID.'][ATTRIBUTE_NAME]" value="'.$ATTRIBUTE_NAME.'" class="form-control">
                                    </div>
                                </div>
                            </div>';
             }
             $PANEL .= '     <div class="row">
                                 <div class="col-lg-3 col-lg-offset-3">
-                                    <button type="submit" class="btn btn-default form-control">Update Users</button>
+                                    <button type="submit" class="btn btn-default form-control">Update Attributes</button>
                                 </div>
                                 <div class="col-lg-3">
                                     <button name="cancel" type="submit" class="btn btn-default form-control">Cancel</button>
@@ -91,21 +91,21 @@
             return $PANEL;
         }
         
-        public static function getUserType($DATA = NULL){
+        public static function getUserAttribute($DATA = NULL){
             if($DATA !== NULL){
                 extract($DATA);
             }
             $DB = portal::database();
-            $SQL = "SELECT * FROM USER_TYPE";
+            $SQL = "SELECT * FROM ATTRIBUTES";
             switch(true){
-                case isset($ID) && isset($NAME) && self::isRealUserType($DATA):
-                    $DB->query($SQL." WHERE ID = ? AND USER_TYPE = ?",array($ID,$NAME));
+                case isset($ID) && isset($NAME) && self::isRealUserAttribute($DATA):
+                    $DB->query($SQL." WHERE ID = ? AND ATTRIBUTE_NAME = ?",array($ID,$NAME));
                     return $DB->fetch_assoc();
-                case isset($ID) && self::isRealUserType($DATA):
+                case isset($ID) && self::isRealUserAttribute($DATA):
                     $DB->query($SQL." WHERE ID = ?",array($ID));
                     return $DB->fetch_assoc();
-                case isset($NAME) && self::isRealUserType($DATA):
-                    $DB->query($SQL." WHERE USER_TYPE = ?",array($NAME));
+                case isset($NAME) && self::isRealUserAttribute($DATA):
+                    $DB->query($SQL." WHERE ATTRIBUTE_NAME = ?",array($NAME));
                     return $DB->fetch_assoc();
                 default:
                     $DB->query($SQL);
@@ -114,7 +114,7 @@
             return NULL;
         }
         
-        public static function isRealUserType($DATA){
+        public static function isRealUserAttribute($DATA){
             if($DATA !== NULL){
                 extract($DATA);
             }
@@ -124,13 +124,13 @@
             $DB = portal::database();
             switch(true){
                 case isset($ID) && isset($NAME):
-                    $DB->query("SELECT * FROM USER_TYPE WHERE ID = ? AND USER_TYPE = ?",array($ID,$NAME));
+                    $DB->query("SELECT * FROM ATTRIBUTES WHERE ID = ? AND ATTRIBUTE_NAME = ?",array($ID,$NAME));
                     break;
                 case isset($ID):
-                    $DB->query("SELECT * FROM USER_TYPE WHERE ID = ?",array($ID));
+                    $DB->query("SELECT * FROM ATTRIBUTES WHERE ID = ?",array($ID));
                     break;
                 case isset($NAME):
-                    $DB->query("SELECT * FROM USER_TYPE WHERE USER_TYPE = ?",array($NAME));
+                    $DB->query("SELECT * FROM ATTRIBUTES WHERE ATTRIBUTE_NAME = ?",array($NAME));
                     break;
             }
             if($DB->fetch_assoc()){
@@ -141,23 +141,23 @@
         
         public static function insert($DATA){
             extract($DATA['POST']);
-            if(self::isRealUserType(array('NAME'=>$USER_TYPE)) || preg_match('/[\'^£$%&*()}{@#~?><>,.|=+¬-]/',$USER_TYPE)){
-                $_SESSION['ERROR_MSG'] = 'User types cannot contain special characters, and cannot be the same as an existing type.';
+            if(self::isRealUserAttribute(array('NAME'=>$ATTRIBUTE_NAME)) || preg_match('/[\'^£$%&*()}{@#~?><>,.|=+¬-]/',$ATTRIBUTE_NAME)){
+                $_SESSION['ERROR_MSG'] = 'Attributes cannot contain special characters, and cannot be the same as an existing attribute.';
                 return;
             }
             $DB = portal::database();
-            $DB->insert("USER_TYPE",array("USER_TYPE"=>$USER_TYPE));
+            $DB->insert("ATTRIBUTES",array("ATTRIBUTE_NAME"=>$ATTRIBUTE_NAME));
         }
         
         public static function update($DATA){
             extract($DATA['POST']);
-            foreach($TYPES AS $ID=>$TYPE){
-                if(self::isRealUserType(array('NAME'=>$TYPE['USER_TYPE'])) || preg_match('/[\'^£$%&*()}{@#~?><>,.|=+¬-]/',$TYPE['USER_TYPE'])){
-                    $_SESSION['ERROR_MSG'] = 'User types cannot contain special characters, and cannot be the same as an existing type.';
+            foreach($ATTRIBUTES AS $ID=>$ATTRIBUTE){
+                if(self::isRealUserAttribute(array('NAME'=>$ATTRIBUTE['ATTRIBUTE_NAME'])) || preg_match('/[\'^£$%&*()}{@#~?><>,.|=+¬-]/',$ATTRIBUTE['ATTRIBUTE_NAME'])){
+                    $_SESSION['ERROR_MSG'] = 'Attributes cannot contain special characters, and cannot be the same as an existing attribute.';
                 }
                 else{
                     $DB = portal::database();
-                    $DB->update("USER_TYPE",array("USER_TYPE"=>$TYPE['USER_TYPE'],"LAST_MODIFIED"=>date('Y-m-d H:i:s')),"ID = ?",array($ID));
+                    $DB->update("ATTRIBUTES",array("ATTRIBUTE_NAME"=>$ATTRIBUTE['ATTRIBUTE_NAME'],"LAST_MODIFIED"=>date('Y-m-d H:i:s')),"ID = ?",array($ID));
                 }
             }
         }
@@ -167,7 +167,7 @@
             $DB = portal::database();
             $IDS = json_decode($id);
             foreach($IDS AS $ID){
-                $DB->delete("USER_TYPE","ID = ?",array($ID));
+                $DB->delete("ATTRIBUTES","ID = ?",array($ID));
             }
         }
     }

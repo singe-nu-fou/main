@@ -19,7 +19,52 @@
         <script>
             $(document).ready(function(){
                 $('.selectable').selectable();
+                $('.CONTROL_PANEL').click(function(event){
+                    switch($(this).attr('ID')){
+                        case 'edit':
+                            event.preventDefault();
+                            var checked = getChecked();
+                            if(checked.length < 1){
+                                alert('Please select one row in order to edit.');
+                            }
+                            else{
+                                window.location.href = $(this).attr('href')+'&id='+JSON.stringify(checked);
+                            }
+                            break;
+                        case 'delete':
+                            event.preventDefault();
+                            var checked = getChecked();
+                            if(checked.length < 1){
+                                alert('Please select one row in order to edit.');
+                            }
+                            else{
+                                window.location.href = 'libraries/update.php?page='+<?=((isset($_GET['subnav'])) ?  "'".$_GET['subnav']."'" : 'index')?>+'&action=delete&id='+JSON.stringify(checked);
+                            }
+                            break;
+                        case 'select_all':
+                            $.each($('tr').find('.checkbox:checkbox'),function(){
+                                $(this).prop("checked",true);
+                                $(this).closest('tr').addClass('active');
+                            });
+                            break;
+                        case 'deselect_all':
+                            $.each($('tr').find('.checkbox:checkbox'),function(){
+                                $(this).prop("checked",false);
+                                $(this).closest('tr').removeClass('active');
+                            });
+                            break;
+                    }
+                });
             });
+            function getChecked(){
+                var checked = new Array();
+
+                $.each($('tr').find('.checkbox:checked'),function(){
+                    checked.push($(this).val());
+                });
+
+                return checked;
+            }
         </script>
     </head>
     <body>
@@ -61,7 +106,7 @@
                     </div>
                 </nav>
             </div>
-            <div class="row" style="padding-top:60px;">
+            <div class="row" style="padding-top:70px;">
                 <?php
                     portal::getMsg();
                     if(isset($_GET['nav'])){

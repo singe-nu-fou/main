@@ -1,9 +1,11 @@
 <?php
+    date_default_timezone_set('America/Chicago');
+
     class portal{
         public static function warp($ZONE,$ACTION){
             $DATA = array(
                 'POST' => $_POST,
-                'GET' => (isset($_GET['names'])) ? ((portal::isJson($_GET['names'])) ? json_decode($_GET['names']) : $_GET['names']) : NULL
+                'GET' => $_GET
             );
             if($ZONE !== 'portal'){
                 require_once($ZONE.'.php');
@@ -14,13 +16,13 @@
         
         public static function navigate($NAV){
             $URL = 'views/'.$NAV.'.php';
-            (file_exists($URL)) ? include($URL) : header('HTTP/1.0 404 Not Found');
+            include($URL);
         }
         
         public static function database(){
             require_once('Zebra_Database\Zebra_Database.php');
             $connection = new Zebra_Database();
-            $connection->debug = false;
+            $connection->debug = true;
             $connection->connect('localhost','root','','alpha');
             $connection->set_charset();
             return $connection;
@@ -39,11 +41,11 @@
                 return '../';
             }
             $DB = self::database();
-            if(users::validUsername($USER_NAME) && users::validPassword($USER_PASSWORD)){
+            if(users::userNameExists(array('USER_NAME'=>$USER_NAME)) && users::validUsername($USER_NAME) && users::validPassword($USER_PASSWORD)){
                 $DB->query("SELECT USER_ACCOUNT.ID,USER_NAME,USER_PASSWORD,USER_TYPE,LAST_LOGIN 
                             FROM USER_ACCOUNT 
                             LEFT JOIN USER_TYPE ON USER_TYPE_ID = USER_TYPE.ID 
-                            LEFT JOIN USER_NAME ON USER_TYPE_ID = USER_NAME.ID 
+                            LEFT JOIN USER_NAME ON USER_NAME_ID = USER_NAME.ID 
                             WHERE USER_NAME = ?",array($DATA['POST']['USER_NAME']));
                 $RESULT = $DB->fetch_obj();
                 if(MD5($DATA['POST']['USER_PASSWORD']) !== $RESULT->USER_PASSWORD){
@@ -71,7 +73,7 @@
         
         public static function isSignedIn(){
             require_once('users.php');
-            if(isset($_SESSION['USER_NAME']) && users::userNameExists($_SESSION['ID'],$_SESSION['USER_NAME'])){
+            if(isset($_SESSION['USER_NAME']) && users::userNameExists(array('USER_NAME'=>$_SESSION['USER_NAME']))){
                 return true;
             }
             return false;
