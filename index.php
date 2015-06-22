@@ -19,6 +19,14 @@
         <script>
             $(document).ready(function(){
                 $('.selectable').selectable();
+                $('.map_control').change(function(){
+                    switch($(this).attr('id')){
+                        case 'MAP_CLASS':
+                            break;
+                        case 'MAP_TYPE':
+                            break;
+                    }
+                });
                 $('.CONTROL_PANEL').click(function(event){
                     switch($(this).attr('ID')){
                         case 'view':

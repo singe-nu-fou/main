@@ -27,11 +27,23 @@
             $this->mode = (!$SKU) ? 'create' : 'edit';
             switch($this->mode){
                 case 'create':
-                    $this->getNextSku();
+                    $this->getJob()->getSkuerData()->getCurrentAttributes();
                     break;
                 case 'edit':
                     $this->sku = $SKU;
-                    $this->getListing();
+                    $DATA = $this->getListing();
+                    foreach($DATA AS $KEY=>$VALUE){
+                        switch($KEY){
+                            case 'marketplace':
+                            case 'mode':
+                            case 'descriptor':
+                                break;
+                            default:
+                                $this->$KEY = $DATA->$KEY;
+                                break;
+                        }
+                    }
+                    $this->getCurrentAttributes()->getDescriptor()->getMarketplace($DATA);
                     break;
             }
         }
@@ -66,6 +78,25 @@
                 $FINAL_ATTRIBUTES[$ATTRIBUTE_NAMES[$KEY]] = $VALUE;
             }
             $this->attributes = $FINAL_ATTRIBUTES;
+            return $this;
+        }
+        
+        public static function getCurrentAttributesBeta($CLASS_ID,$TYPE_ID){
+            $DB = portal::database();
+            $DB->query('SELECT 
+                        CONCAT(\'{\',GROUP_CONCAT(CONCAT(\'"\',ATTRIBUTES.ID,\'"\',\':"\',ATTRIBUTES.ATTRIBUTE_NAME,\'"\')),\'}\') AS ATTRIBUTES
+                        FROM CLASSES_HAS_TYPES AS CHT 
+                        JOIN TYPES_HAS_ATTRIBUTES AS THA ON CHT.ID = THA.CHT_ID 
+                        JOIN CLASSES ON CHT.CLASS_ID = CLASSES.ID 
+                        JOIN TYPES ON CHT.TYPE_ID = TYPES.ID 
+                        JOIN ATTRIBUTES ON THA.ATTRIBUTE_ID = ATTRIBUTES.ID
+                        WHERE CLASSES.ID = ? AND TYPES.ID = ?',array($CLASS_ID,$TYPE_ID));
+            $TEST = new stdClass();
+            foreach($DB->fetch_assoc() AS $KEY=>$VALUE){
+                $TEST->$KEY = ($KEY === 'ATTRIBUTES') ? json_decode($VALUE) : $VALUE;
+            }
+            var_dump($TEST);
+            exit;
             return $this;
         }
         
@@ -117,10 +148,6 @@
             return $DBlister->fetch_assoc_all();
         }
         
-        private function getNextSku(){
-            $this->getJob()->getSkuerData()->getCurrentAttributes();
-        }
-        
         private function getListing(){
             $DBlister = portal::databaseOld();
             $DBlister->query("SELECT 
@@ -143,18 +170,6 @@
                             LEFT JOIN classification ON listings.classification_id = classification.id
                             LEFT JOIN types ON listings.type_id = types.id
                             WHERE listings.sku = '$this->sku'");
-            $result = $DBlister->fetch_obj();
-            foreach($result AS $key=>$value){
-                switch($key){
-                    case 'marketplace':
-                    case 'mode':
-                    case 'descriptor':
-                        break;
-                    default:
-                        $this->$key = $result->$key;
-                        break;
-                }
-            }
-            $this->getCurrentAttributes()->getDescriptor()->getMarketplace($result);
+            return $DBlister->fetch_obj();
         }
     }

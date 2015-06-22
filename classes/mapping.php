@@ -3,25 +3,24 @@
     require_once('types.php');
     require_once('attributes.php');
 
-    class templates{
+    class mapping{
         public static function tbody(){
             extract($_GET);
             $DB = portal::database();
-            $DB->query('SELECT TEMPLATES.ID,
-                        TEMPLATE_NAME,
-                        CLASS_NAME,
-                        TYPE_NAME,
-                        TEMPLATES.LAST_MODIFIED
-                        FROM TEMPLATES
-                        LEFT JOIN CLASSES ON CLASS_ID = CLASSES.ID
-                        LEFT JOIN TYPES ON TYPE_ID = TYPES.ID
+            $DB->query('SELECT 
+                        CHT.ID,
+                        CLASSES.CLASS_NAME,
+                        TYPES.TYPE_NAME,
+                        CHT.LAST_MODIFIED
+                        FROM CLASSES_HAS_TYPES AS CHT 
+                        JOIN CLASSES ON CHT.CLASS_ID = CLASSES.ID 
+                        JOIN TYPES ON CHT.TYPE_ID = TYPES.ID 
                         ORDER BY '.$orderBy.' '.$order);
             $TBODY = "<tbody>";
             while($RESULT = $DB->fetch_assoc()){
                 extract($RESULT);
                 $TBODY .= '<tr>
                                <td><input type="checkbox" class="checkbox" value="'.$ID.'" style="display:none;">'.$ID.'</td>
-                               <td>'.$TEMPLATE_NAME.'</td>
                                <td>'.$CLASS_NAME.'</td>
                                <td>'.$TYPE_NAME.'</td>
                                <td>'.date('l, F Y h:i:sA',strtotime($LAST_MODIFIED)).'</td>
@@ -37,6 +36,8 @@
                         <div class="panel-body">
                             <div class="row" style="padding-bottom:15px;">
                                 <form action="" method="post">
+                                    <input type="hidden" name="CLASS_ID">
+                                    <input type="hidden" name="TYPE_ID">
                                     <div class="col-lg-6 col-lg-offset-3">
                                         <div class="input-group">
                                             <span class="input-group-addon">
@@ -50,14 +51,14 @@
                                     </div>
                                 </form>
                             </div>
-                            <form method="POST" action="libraries/update.php?page=templates&action=insert">
+                            <form method="POST" action="libraries/update.php?page=mapping&action=insert">
                                 <div class="row" style="padding-bottom:15px;">
                                     <div class="col-lg-6 col-lg-offset-3">
                                         <div class="input-group">
                                             <span class="input-group-addon">
                                                 Classification
                                             </span>
-                                            <select name="CLASS_ID" class="form-control">';
+                                            <select id="MAP_CLASS" name="CLASS_ID" class="map_control form-control">';
             $CLASSIFICATIONS = classifications::getClassification();
             foreach($CLASSIFICATIONS AS $VALUE){
                 extract($VALUE);
@@ -71,7 +72,7 @@
                                             <span class="input-group-addon">
                                                 Type
                                             </span>
-                                            <select name="TYPE_ID" class="form-control">';
+                                            <select id="MAP_TYPE" name="TYPE_ID" class="map_control form-control">';
             $TYPES = types::getType();
             foreach($TYPES AS $VALUE){
                 extract($VALUE);
@@ -122,29 +123,24 @@
                             <form method="POST" action="libraries/update.php?page=templates&action=update">';
             $IDS = json_decode($id);
             foreach($IDS AS $ID){
-                $DB->query("SELECT TEMPLATE_NAME,
-                        CLASS_NAME,
-                        TYPE_NAME,
-                        GROUP_CONCAT(ATTRIBUTE_NAME) AS 'ATTRIBUTE_NAME'
-                        FROM TEMPLATES
-                        LEFT JOIN CLASSES ON CLASSES.ID = CLASS_ID
-                        LEFT JOIN TYPES ON TYPES.ID = TYPE_ID
-                        LEFT JOIN TEMPLATE_ATTRIBUTES ON TEMPLATES.ID = TEMPLATE_ID
-                        LEFT JOIN ATTRIBUTES ON ATTRIBUTES.ID = ATTRIBUTE_ID
-                        WHERE TEMPLATES.ID = ".$ID);
+                $DB->query('SELECT 
+                            CHT.ID,
+                            CLASSES.ID,
+                            CLASSES.CLASS_NAME,
+                            TYPES.ID,
+                            TYPES.TYPE_NAME,
+                            CONCAT(\'{\',GROUP_CONCAT(CONCAT(\'"\',ATTRIBUTES.ID,\'"\',\':"\',ATTRIBUTES.ATTRIBUTE_NAME,\'"\')),\'}\') AS ATTRIBUTES
+                            FROM CLASSES_HAS_TYPES AS CHT 
+                            JOIN TYPES_HAS_ATTRIBUTES AS THA ON CHT.ID = THA.CHT_ID 
+                            JOIN CLASSES ON CHT.CLASS_ID = CLASSES.ID 
+                            JOIN TYPES ON CHT.TYPE_ID = TYPES.ID 
+                            JOIN ATTRIBUTES ON THA.ATTRIBUTE_ID = ATTRIBUTES.ID
+                            WHERE CHT.ID = ?',array($ID));
                 $RESULTS = $DB->fetch_assoc_all();
                 foreach($RESULTS AS $KEY=>$VALUE){
                     extract($VALUE);
                     $PANEL .= '<div class="row" style="padding-bottom:15px;">';
                     $PANEL .= '<div class="col-lg-6 col-lg-offset-3">
-                                   <div class="input-group">
-                                       <span class="input-group-addon">
-                                           Template
-                                       </span>
-                                       <input type="text" value="'.$TEMPLATE_NAME.'" class="form-control" disabled>
-                                   </div>
-                               </div>
-                               <div class="col-lg-6 col-lg-offset-3">
                                    <div class="input-group">
                                        <span class="input-group-addon">
                                            Classification
@@ -160,16 +156,18 @@
                                        <input type="text" value="'.$TYPE_NAME.'" class="form-control" disabled>
                                    </div>
                                </div>';
-                    $ATTRIBUTES = explode(',',$ATTRIBUTE_NAME);
-                    foreach($ATTRIBUTES AS $KEY=>$ATTRIBUTE){
-                        $PANEL .= '<div class="col-lg-6 col-lg-offset-3">
-                                        <div class="input-group">
-                                            <span class="input-group-addon">
-                                                Attribute '.($KEY+1).'
-                                            </span>
-                                            <input type="text" value="'.$ATTRIBUTE.'" class="form-control" disabled>
-                                        </div>
-                                    </div>';
+                    $ATTRIBUTES = json_decode($ATTRIBUTES);
+                    if($ATTRIBUTES){
+                        foreach($ATTRIBUTES AS $KEY=>$ATTRIBUTE){
+                            $PANEL .= '<div class="col-lg-6 col-lg-offset-3">
+                                            <div class="input-group">
+                                                <span class="input-group-addon">
+                                                    Attribute
+                                                </span>
+                                                <input type="text" value="'.$ATTRIBUTE.'" class="form-control" disabled>
+                                            </div>
+                                        </div>';
+                        }
                     }
                 }
                 $PANEL .= "</div>";
@@ -186,81 +184,21 @@
             return $PANEL;
         }
         
-        public static function getTemplate($DATA = NULL){
-            if($DATA !== NULL){
-                extract($DATA);
-            }
-            $DB = portal::database();
-            $SQL = "SELECT * FROM TEMPLATES";
-            switch(true){
-                case isset($ID) && isset($NAME) && self::isRealUserTemplate($DATA):
-                    $DB->query($SQL." WHERE ID = ? AND TEMPLATE_NAME = ?",array($ID,$NAME));
-                    return $DB->fetch_assoc();
-                case isset($ID) && self::isRealTemplate($DATA):
-                    $DB->query($SQL." WHERE ID = ?",array($ID));
-                    return $DB->fetch_assoc();
-                case isset($NAME) && self::isRealTemplate($DATA):
-                    $DB->query($SQL." WHERE TEMPLATE_NAME = ?",array($NAME));
-                    return $DB->fetch_assoc();
-                default:
-                    $DB->query($SQL);
-                    return $DB->fetch_assoc_all();
-            }
-            return NULL;
-        }
-        
-        public static function isRealTemplate($DATA){
-            if($DATA !== NULL){
-                extract($DATA);
-            }
-            else{
-                return false;
-            }
-            $DB = portal::database();
-            switch(true){
-                case isset($ID) && isset($NAME):
-                    $DB->query("SELECT * FROM TEMPLATES WHERE ID = ? AND TEMPLATE_NAME = ?",array($ID,$NAME));
-                    break;
-                case isset($ID):
-                    $DB->query("SELECT * FROM TEMPLATES WHERE ID = ?",array($ID));
-                    break;
-                case isset($NAME):
-                    $DB->query("SELECT * FROM TEMPLATES WHERE TEMPLATE_NAME = ?",array($NAME));
-                    break;
-            }
-            if($DB->fetch_assoc()){
-                return true;
-            }
-            return false;
-        }
-        
         public static function insert($DATA){
             $DB = portal::database();
             extract($DATA['POST']);
-            extract(classifications::getClassification(array('ID'=>$CLASS_ID)));
-            extract(types::getType(array('ID'=>$TYPE_ID)));
-            if(self::isRealTemplate(array('NAME'=>$CLASS_NAME.'/'.$TYPE_NAME))){
-                $_SESSION['ERROR_MSG'] = 'Template cannot be the same as an existing template.';
-                return;
+            //extract(classifications::getClassification(array('ID'=>$CLASS_ID)));
+            //extract(types::getType(array('ID'=>$TYPE_ID)));
+            $DB->select("*","CLASSES_HAS_TYPES","CLASS_ID = ? AND TYPE_ID = ?",array($CLASS_ID,$TYPE_ID));
+            if($EXISTS = $DB->fetch_assoc()){
+                $DB->delete("CLASSES_HAS_TYPES","ID = ?",array($EXISTS['ID']));
+                $DB->delete("TYPES_HAS_ATTRIBUTES","CHT_ID = ?",array($EXISTS['ID']));
             }
-            $DB->insert("TEMPLATES",array("TEMPLATE_NAME"=>$CLASS_NAME.'/'.$TYPE_NAME,"CLASS_ID"=>$CLASS_ID,"TYPE_ID"=>$TYPE_ID));
-            $DB->select("ID AS 'TEMPLATE_ID'","TEMPLATES","TEMPLATE_NAME = ?",array($CLASS_NAME.'/'.$TYPE_NAME));
+            $DB->insert("CLASSES_HAS_TYPES",array("CLASS_ID"=>$CLASS_ID,"TYPE_ID"=>$TYPE_ID));
+            $DB->select("ID AS 'CHT_ID'","CLASSES_HAS_TYPES","CLASS_ID = ? AND TYPE_ID = ?",array($CLASS_ID,$TYPE_ID));
             extract($DB->fetch_assoc());
             foreach($ATTRIBUTE_ID AS $KEY=>$VALUE){
-                $DB->insert("TEMPLATE_ATTRIBUTES",array("TEMPLATE_ID"=>$TEMPLATE_ID,"ATTRIBUTE_ID"=>$VALUE,"SEQUENCE"=>$KEY));
-            }
-        }
-        
-        public static function update($DATA){
-            extract($DATA['POST']);
-            foreach($TEMPLATES AS $ID=>$TEMPLATE){
-                if(self::isRealTemplate(array('NAME'=>$TEMPLATE['TEMPLATE_NAME']))){
-                    $_SESSION['ERROR_MSG'] = 'Templates cannot be the same as an existing classification.';
-                }
-                else{
-                    $DB = portal::database();
-                    $DB->update("TEMPLATES",array("TEMPLATE_NAME"=>$TEMPLATE['TEMPLATE_NAME'],"LAST_MODIFIED"=>date('Y-m-d H:i:s')),"ID = ?",array($ID));
-                }
+                $DB->insert("TYPES_HAS_ATTRIBUTES",array("CHT_ID"=>$CHT_ID,"ATTRIBUTE_ID"=>$VALUE,"SEQUENCE"=>$KEY));
             }
         }
         
@@ -269,8 +207,8 @@
             $DB = portal::database();
             $IDS = json_decode($id);
             foreach($IDS AS $ID){
-                $DB->delete("TEMPLATES","ID = ?",array($ID));
-                $DB->delete("TEMPLATE_ATTRIBUTES","TEMPLATE_ID = ?",array($ID));
+                $DB->delete("CLASSES_HAS_TYPES","ID = ?",array($ID));
+                $DB->delete("TYPES_HAS_ATTRIBUTES","CHT_ID = ?",array($ID));
             }
         }
     }

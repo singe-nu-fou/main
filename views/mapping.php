@@ -9,7 +9,7 @@
         'create'=>'&action=create',
         'view'=>'&action=view'
     );
-    $TITLE = 'Templates';
+    $TITLE = 'Map Classification, Type, Attribute';
     $CONTROL_PANEL = array(
         'Select All'=>array(
             'id'=>'select_all'
@@ -17,31 +17,30 @@
         'Deselect All'=>array(
             'id'=>'deselect_all'
         ),
-        'New Template'=>array(
+        'New Mapping'=>array(
             'id'=>'create',
             'href'=>((strpos($_SERVER['QUERY_STRING'],'&action=create')) ? portal::scrubString($ACTION,'',$URL) : portal::scrubString($ACTION,'',$URL).$ACTION['create'])
         ),
-        'View Template'=>array(
+        'View Mapping'=>array(
             'id'=>'view',
             'href'=>((strpos($_SERVER['QUERY_STRING'],'&action=view')) ? portal::scrubString($ACTION,'',$URL) : portal::scrubString($ACTION,'',$URL).$ACTION['view'])
         ),
-        'Delete Templates'=>array(
+        'Delete Mapping'=>array(
             'id'=>'delete'
         )
     );
     if(isset($_GET['action'])){
         switch($_GET['action']){
             case 'create':
-                unset($CONTROL_PANEL['New Template']);
+                unset($CONTROL_PANEL['New Mapping']);
                 break;
             case 'view':
-                unset($CONTROL_PANEL['View Template']);
+                unset($CONTROL_PANEL['View Mapping']);
                 break;
         }
     }
     $THEAD = array(
         'ID'=>'ID',
-        'Template'=>'TEMPLATE_NAME',
         'Classification'=>'CLASS_NAME',
         'Type'=>'TYPE_NAME',
         'Last Modified'=>'LAST_MODIFIED'

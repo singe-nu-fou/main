@@ -1,8 +1,8 @@
 <?php
     $SUBNAV = isset($_GET['subnav']) ? $_GET['subnav'] : NULL;
     $LIST = array(
-        'Templates' => array(
-            'subnav' => 'templates',
+        'Mapping' => array(
+            'subnav' => 'mapping',
             'params' => '&orderBy=ID&order=ASC'
         ),
         'Classifications' => array(
