@@ -22,8 +22,10 @@
                 $('.map_control').change(function(){
                     switch($(this).attr('id')){
                         case 'MAP_CLASS':
+                            $('#hidden_class').val($(this).val());
                             break;
                         case 'MAP_TYPE':
+                            $('#hidden_type').val($(this).val());
                             break;
                     }
                 });

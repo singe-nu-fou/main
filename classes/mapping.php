@@ -36,8 +36,8 @@
                         <div class="panel-body">
                             <div class="row" style="padding-bottom:15px;">
                                 <form action="" method="post">
-                                    <input type="hidden" name="CLASS_ID">
-                                    <input type="hidden" name="TYPE_ID">
+                                    <input id="hidden_class" type="hidden" name="CLASS_ID" value="'.((isset($_POST['CLASS_ID'])) ? $_POST['CLASS_ID'] : '').'">
+                                    <input id="hidden_type" type="hidden" name="TYPE_ID" value="'.((isset($_POST['TYPE_ID'])) ? $_POST['TYPE_ID'] : '').'">
                                     <div class="col-lg-6 col-lg-offset-3">
                                         <div class="input-group">
                                             <span class="input-group-addon">
@@ -62,7 +62,7 @@
             $CLASSIFICATIONS = classifications::getClassification();
             foreach($CLASSIFICATIONS AS $VALUE){
                 extract($VALUE);
-                $PANEL .= '<option value="'.$ID.'">'.$CLASS_NAME.'</option>';
+                $PANEL .= '<option value="'.$ID.'"'.((isset($_POST['CLASS_ID']) && $ID === $_POST['CLASS_ID']) ? ' selected' : '').'>'.$CLASS_NAME.'</option>';
             }
             $PANEL .= '</select>
                                         </div>
@@ -76,7 +76,7 @@
             $TYPES = types::getType();
             foreach($TYPES AS $VALUE){
                 extract($VALUE);
-                $PANEL .= '<option value="'.$ID.'">'.$TYPE_NAME.'</option>';
+                $PANEL .= '<option value="'.$ID.'"'.((isset($_POST['TYPE_ID']) && $ID === $_POST['TYPE_ID']) ? ' selected' : '').'>'.$TYPE_NAME.'</option>';
             }
             $PANEL .= '</select>
                                         </div>
@@ -88,7 +88,7 @@
                                             <span class="input-group-addon">
                                                 Attribute
                                             </span>
-                                            <select name="ATTRIBUTE_ID['.$i.']" class="form-control">';
+                                            <select name="ATTRIBUTE_ID['.$i.']" class="attribute_control form-control">';
             $ATTRIBUTES = attributes::getAttribute();
             foreach($ATTRIBUTES AS $VALUE){
                 extract($VALUE);

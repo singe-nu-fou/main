@@ -1,25 +1,87 @@
 <?php
-    session_start();
-    require_once('classes/portal.php');
-    require_once('classes/listing.php');
-    listing::getCurrentAttributesBeta('3','4');
-    
-    //$DB = portal::database();
-    /*$DB->query('SELECT 
-                CHT.ID,
-                CLASSES.ID,
-                CLASSES.CLASS_NAME,
-                TYPES.ID,
-                TYPES.TYPE_NAME,
-                CONCAT(\'{\',GROUP_CONCAT(CONCAT(\'"\',ATTRIBUTES.ID,\'"\',\':"\',ATTRIBUTES.ATTRIBUTE_NAME,\'"\')),\'}\') AS ATTRIBUTES
-                FROM CLASSES_HAS_TYPES AS CHT 
-                JOIN TYPES_HAS_ATTRIBUTES AS THA ON CHT.ID = THA.CHT_ID 
-                JOIN CLASSES ON CHT.CLASS_ID = CLASSES.ID 
-                JOIN TYPES ON CHT.TYPE_ID = TYPES.ID 
-                JOIN ATTRIBUTES ON THA.ATTRIBUTE_ID = ATTRIBUTES.ID
-                WHERE CHT.ID = 21');
-    $RESULTS = $DB->fetch_assoc_all();
-    $ATTRIBUTES = $RESULTS[0]['ATTRIBUTES'];
-    var_dump($ATTRIBUTES);
-    $ATTRIBUTES = json_decode($ATTRIBUTES);
-    var_dump($ATTRIBUTES);*/
+    $sql = "SELECT "
+             .     "AGENT_NUMBER, "
+             .     "AGENT_NAME1, "
+             .     "AGENT_MAIL_ADDR, "
+             .     "AGENT_MAIL_CITY, "
+             .     "AGENT_MAIL_ST, "
+             .     "AGENT_MAIL_ZIP1, "
+             .     "AGENT_MAIL_ZIP2, "
+             .     "AGENT_PHY_ADDR1, "
+             .     "AGENT_PHY_CITY, "
+             .     "AGENT_PHY_ST, "
+             .     "AGENT_PHY_ZIP1, "
+             .     "AGENT_PHY_COUNTY, "
+             .     "AGENT_MKT_REP, "
+             .     "AGENT_PH_TOLL, "
+             .     "AGENT_EMAIL_ADDR, "
+             .     "AGENT_WEB_ADDR, "
+             .     "AGENT_COMPARATIVE_RATER, "
+             .     "CONCAT(AGENT_PH_AREA,AGENT_PH_NBR1,AGENT_PH_NBR2) AS PHONE, "
+             .     "AGENT_FAX_TOLL, "
+             .     "CONCAT(AGENT_FAX_AREA,AGENT_FAX_NBR1,AGENT_FAX_NBR2) AS FAX,"
+             .     "AGENT_STATUS, "
+             .     "AGENT_SSN, "
+             .     "AGENT_SUSP_CODE, "
+             .     "AGENT_SUSP_DATE, "
+             .     "AGENT_SUSP_REASON, "
+             .     "AGENT_E_AND_O, "
+             .     "AGENT_PHY_LATITUDE, "              
+             .     "AGENT_PHY_LONGITUDE, " 
+             .     "AGENT_CONTACT_NAME1, "              
+             .     "AGENT_CONTACT_NAME2, " 
+             .     "AGENT_CONTACT_NAME3, "                           
+             .     "AGENT_CONTACT_NAME4, "              
+             .     "AGENT_CONTACT_NAME5, "  
+             .     "AGENT_CONTACT_TITLE1, "              
+             .     "AGENT_CONTACT_TITLE2, " 
+             .     "AGENT_CONTACT_TITLE3, "                           
+             .     "AGENT_CONTACT_TITLE4, "              
+             .     "AGENT_CONTACT_TITLE5, "              
+             .     "AGENT_CONTACT_EMAIL1, "              
+             .     "AGENT_CONTACT_EMAIL2, " 
+             .     "AGENT_CONTACT_EMAIL3, "                           
+             .     "AGENT_CONTACT_EMAIL4, "              
+             .     "AGENT_CONTACT_EMAIL5, "                                        
+             .     "AGENT_OFCRS1, "
+             .     "AGENT_OFCRS2, "
+             .     "AGENT_OFCRS3, "
+             .     "AGENT_OFCRS4, "
+             .     "AGENT_OFCRS5, "
+             .     "AGENT_LIC_EXP_DATE1, "
+             .     "AGENT_LIC_EXP_DATE2, "
+             .     "AGENT_LIC_EXP_DATE3, "
+             .     "AGENT_LIC_EXP_DATE4, "
+             .     "AGENT_LIC_EXP_DATE5, "
+             .     "AGENT_LIC_NUM1, "
+             .     "AGENT_LIC_NUM2, "
+             .     "AGENT_LIC_NUM3, "
+             .     "AGENT_LIC_NUM4, "
+             .     "AGENT_LIC_NUM5, "
+             .     "AGENT_LIC_NUM1_TYPE, "
+             .     "AGENT_LIC_NUM2_TYPE, "
+             .     "AGENT_LIC_NUM3_TYPE, "
+             .     "AGENT_LIC_NUM4_TYPE, "
+             .     "AGENT_LIC_NUM5_TYPE, "
+             .     "AGENT_CONTRACT_DATE, "
+             .     "AGENT_TERM_DATE, "
+             .     "AGENT_APPOINT_DATE, "
+             .     "AGENT_ALLOW_FULL_ENDS, "
+             .     "AGENT_ALLOW_DIGITAL_SIG, "                          
+             .     "AGENT_REMOTE_SIG_DEFAULT, "             
+             .     "AGENT_ALLOW_LOSS_EXP, "             
+             .     "AGENT_MVR_ENABLED, "             
+             .     "AGENT_VHS, "             
+             .     "AGENT_OLD_AGENT_NUMBER, "             
+             .     "AGENT_NOTIFY_METHOD, "             
+             .     "AGENT_PREM_VOLUME, "
+             .     "AGENT_UW_GRADE, "
+             .     "AGENT_MKTG_GRADE, "                                       
+             .     "AGENT_E_AND_O_LIM, "
+             .     "AGENT_CREATE_DATE, "
+             .     "COUNT(DISTINCT WEBUSER_NAME) AS AGENT_WEBUSER_COUNT, "
+             .     "COUNT(DISTINCT AGT_COMPETITOR_ID) AS AGENT_COMPETITOR_COUNT "
+             . "FROM "
+             .     "AGENT "
+             . "LEFT JOIN AGT_COMPETITOR ON AGT_COMPETITOR_AGENT_NUMBER = AGENT_NUMBER INNER JOIN COMPETITOR ON AGT_COMPETITOR.AGT_COMPETITOR_ID = COMPETITOR.COMPETITOR_ID LEFT JOIN WEBUSER ON AGENT_NUMBER = WEBUSER_PROD ";
+    echo $sql;
