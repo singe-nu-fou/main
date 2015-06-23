@@ -114,6 +114,21 @@
             return NULL;
         }
         
+        public static function getTypeAttribute($DATA){
+            if($DATA !== NULL){
+                extract($DATA);
+            }
+            $DB = portal::database();
+            $DB->query("SELECT CLASSES_HAS_TYPES.ID AS CHT_ID FROM CLASSES_HAS_TYPES LEFT JOIN CLASSES ON CLASS_ID = CLASSES.ID LEFT JOIN TYPES ON TYPE_ID = TYPES.ID WHERE CLASSES.ID = ? AND TYPES.ID = ?",array($CLASS_ID,$TYPE_ID));
+            if($DATA = $DB->fetch_assoc()){
+                extract($DATA);
+            }
+            if(isset($CHT_ID)){
+                $DB->query("SELECT ATTRIBUTES.ID,ATTRIBUTE_NAME FROM TYPES_HAS_ATTRIBUTES LEFT JOIN ATTRIBUTES ON ATTRIBUTE_ID = ATTRIBUTES.ID WHERE CHT_ID = ? ORDER BY SEQUENCE",array($CHT_ID));
+                return $DB->fetch_assoc_all();
+            }
+        }
+        
         public static function isRealType($DATA){
             if($DATA !== NULL){
                 extract($DATA);

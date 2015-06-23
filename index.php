@@ -109,6 +109,7 @@
                         <div id="navbar" class="navbar-collapse collapse">
                             <ul class="nav navbar-nav">
                                 <li <?=isset($_GET['nav']) && $_GET['nav'] === 'home' ? 'class="active"' : ''?>><a href="?nav=home">Home</a></li>
+                                <li <?=isset($_GET['nav']) && $_GET['nav'] === 'report' ? 'class="active"' : ''?>><a href="?nav=report">Report</a></li>
                                 <li <?=isset($_GET['nav']) && $_GET['nav'] === 'admin' ? 'class="active"' : ''?>><a href="?nav=admin">Admin</a></li>
                             </ul>
 

@@ -59,7 +59,8 @@
                                                 Classification
                                             </span>
                                             <select id="MAP_CLASS" name="CLASS_ID" class="map_control form-control">';
-            $CLASSIFICATIONS = classifications::getClassification();
+            $CLASSIFICATIONS = portal::warp('classifications','getClassification');
+            //$CLASSIFICATIONS = classifications::getClassification();
             foreach($CLASSIFICATIONS AS $VALUE){
                 extract($VALUE);
                 $PANEL .= '<option value="'.$ID.'"'.((isset($_POST['CLASS_ID']) && $ID === $_POST['CLASS_ID']) ? ' selected' : '').'>'.$CLASS_NAME.'</option>';
@@ -73,7 +74,8 @@
                                                 Type
                                             </span>
                                             <select id="MAP_TYPE" name="TYPE_ID" class="map_control form-control">';
-            $TYPES = types::getType();
+            $TYPES = portal::warp('types','getType');
+            //$TYPES = types::getType();
             foreach($TYPES AS $VALUE){
                 extract($VALUE);
                 $PANEL .= '<option value="'.$ID.'"'.((isset($_POST['TYPE_ID']) && $ID === $_POST['TYPE_ID']) ? ' selected' : '').'>'.$TYPE_NAME.'</option>';
@@ -89,7 +91,8 @@
                                                 Attribute
                                             </span>
                                             <select name="ATTRIBUTE_ID['.$i.']" class="attribute_control form-control">';
-            $ATTRIBUTES = attributes::getAttribute();
+            $ATTRIBUTES = portal::warp('attributes','getAttribute');
+            //$ATTRIBUTES = attributes::getAttribute();
             foreach($ATTRIBUTES AS $VALUE){
                 extract($VALUE);
                 $PANEL .= '<option value="'.$ID.'">'.$ATTRIBUTE_NAME.'</option>';

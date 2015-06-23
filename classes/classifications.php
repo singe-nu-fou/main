@@ -114,6 +114,15 @@
             return NULL;
         }
         
+        public static function getClassificationType($DATA = NULL){
+            if($DATA !== NULL){
+                extract($DATA);
+            }
+            $DB = portal::database();
+            $DB->query("SELECT TYPES.ID,TYPE_NAME FROM CLASSES_HAS_TYPES LEFT JOIN CLASSES ON CLASS_ID = CLASSES.ID LEFT JOIN TYPES ON TYPE_ID = TYPES.ID WHERE CLASSES.ID = ?",array($ID));
+            return $DB->fetch_assoc_all();
+        }
+        
         public static function isRealClassification($DATA){
             if($DATA !== NULL){
                 extract($DATA);

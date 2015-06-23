@@ -2,11 +2,11 @@
     date_default_timezone_set('America/Chicago');
 
     class portal{
-        public static function warp($ZONE,$ACTION){
-            $DATA = array(
+        public static function warp($ZONE,$ACTION,$DATA = NULL){
+            $DATA = ($DATA === NULL) ? array(
                 'POST' => $_POST,
                 'GET' => $_GET
-            );
+            ) : $DATA;
             if($ZONE !== 'portal'){
                 require_once($ZONE.'.php');
                 return $ZONE::$ACTION($DATA);
