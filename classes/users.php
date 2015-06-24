@@ -214,7 +214,7 @@
         public static function update($DATA){
             $DB = portal::database();
             extract($DATA['POST']);
-            $ERR_MSG = array();
+            $ERROR_MSG = array();
             $ERR_REASON = array();
             foreach($USERS AS $ID=>$USER){
                 $DB->select("USER_TYPE_ID,USER_NAME_ID,USER_EMAIL_ID","USER_ACCOUNT","ID = ?",array($ID));
@@ -227,7 +227,7 @@
                             switch(false){
                                 case self::validUsername($USER['USER_NAME']);
                                 case !self::userNameExists(array('USER_NAME',$USER['USER_NAME'])):
-                                    $ERR_MSG[] = $USER_NAME;
+                                    $ERROR_MSG[] = $USER_NAME;
                                     $ERR_REASON[] = 'Please ensure the new username does not contain any special characters, is at least six characters long, and does not already exist!';
                                     break;
                                 default:
@@ -250,7 +250,7 @@
                             switch(false){
                                 case self::validUsername($USER['USER_NAME']);
                                 case !self::userNameExists(array('USER_NAME',$USER['USER_NAME'])):
-                                    $ERR_MSG[] = $USER_NAME;
+                                    $ERROR_MSG[] = $USER_NAME;
                                     $ERR_REASON[] = 'Please ensure the new username does not contain any special characters, is at least six characters long, and does not already exist!';
                                     break;
                                 default:
@@ -306,14 +306,14 @@
             if(isset($ID)){
                 $DB->select("USER_NAME","USER_NAME","ID = ?",array($ID));
                 if($DB->fetch_assoc()){
-                    $_SESSION['ERR_MSG'] = "Invalid username: This username already exists.";
+                    //$_SESSION['ERROR_MSG'] = "Invalid username: This username already exists.";
                     return true;
                 }
             }
             elseif(isset($USER_NAME)){
                 $DB->select("USER_NAME","USER_NAME","USER_NAME = ?",array($USER_NAME));
                 if($DB->fetch_assoc()){
-                    $_SESSION['ERR_MSG'] = "Invalid username: This username already exists.";
+                    //$_SESSION['ERROR_MSG'] = "Invalid username: This username already exists.";
                     return true;
                 }
             }
@@ -326,14 +326,14 @@
             if(isset($ID)){
                 $DB->select("USER_EMAIL","USER_EMAIL","ID = ?",array($ID));
                 if($DB->fetch_assoc()){
-                    $_SESSION['ERR_MSG'] = "Invalid email address: This email address is already tied to another account.";
+                    $_SESSION['ERROR_MSG'] = "Invalid email address: This email address is already tied to another account.";
                     return true;
                 }
             }
             elseif(isset($USER_EMAIL)){
                 $DB->select("USER_EMAIL","USER_EMAIL","USER_EMAIL = ?",array($USER_EMAIL));
                 if($DB->fetch_assoc()){
-                    $_SESSION['ERR_MSG'] = "Invalid email address: This email address is already tied to another account.";
+                    $_SESSION['ERROR_MSG'] = "Invalid email address: This email address is already tied to another account.";
                     return true;
                 }
             }
@@ -365,5 +365,17 @@
             }
             unset($_SESSION['ERROR_MSG']);
             return true;
+        }
+        
+        public static function getUserGroup($DATA){
+            extract($DATA);
+            $DB = portal::database();
+            $DB->query("SELECT USER_ACCOUNT.ID, 
+                        USER_NAME 
+                        FROM USER_ACCOUNT 
+                        JOIN USER_TYPE ON USER_TYPE_ID = USER_TYPE.ID
+                        JOIN USER_NAME ON USER_NAME_ID = USER_NAME.ID
+                        WHERE USER_TYPE = 'ADMIN' OR USER_TYPE = ?",array($USER_TYPE));
+            return $DB->fetch_assoc_all();
         }
     }

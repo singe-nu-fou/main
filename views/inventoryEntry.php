@@ -17,9 +17,6 @@
             case 'inventory[type]':
                 get = '&type=';
                 break;
-            case 'inventory[condition]':
-                get = '&condition=';
-                break;
         }
         if(href.indexOf(get) === -1){
             return href+get+value;
@@ -63,7 +60,7 @@
                 </div>
                 <div class="col-lg-4">
                     Condition
-                    <select name="inventory[condition]" class="inventory-control form-control">
+                    <select name="inventory[Condition]" class="form-control">
                         <?php
                         $OPTIONS = array(
                             'Vintage',
@@ -80,7 +77,7 @@
                 </div>
                 <div class="col-lg-4">
                     Quantity
-                    <input type="text" class="form-control" name="inventory[quantity]">
+                    <input type="text" class="form-control" name="inventory[Quantity]">
                 </div>
                 <?php
                     if(isset($_GET['class']) && isset($_GET['type'])){

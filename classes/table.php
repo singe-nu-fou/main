@@ -16,7 +16,14 @@
             
             $this->CONTROL_PANEL .= '</ul>';
             
-            $this->MODE = (isset($MODE)) ? portal::warp($_GET['subnav'],$MODE) : '';
+            if(isset($MODE) && is_array($MODE)){
+                foreach($MODE AS $KEY=>$VALUE){
+                    $this->MODE[] = (isset($VALUE)) ? portal::warp($_GET['subnav'],$VALUE) : '';
+                }
+            }
+            else{
+                $this->MODE = (isset($MODE)) ? portal::warp($_GET['subnav'],$MODE) : '';
+            }
             
             $this->TABLE = '<table class="'.$SELECTABLE.' table table-hover">';
             $this->TABLE .= '<thead><tr>';
@@ -31,6 +38,7 @@
         }
         
         public function getTable(){
+            $this->MODE = is_array($this->MODE) ? implode('',$this->MODE) : $this->MODE;
             return '<div class="panel panel-default">'.$this->HEADER.$this->CONTROL_PANEL.$this->MODE.$this->TABLE.$this->FOOTER.'</div>';
         }
         

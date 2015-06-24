@@ -1,35 +1,34 @@
 <?php
-    $sql_dmd    = "SELECT "
-                    .   "CLDEMAND.CLDEMAND_IMAGE_FILE_NAME, "
-                    .   "CLDEMAND.CLDEMAND_POL_NUM, "
-                    .   "CLDEMAND.CLDEMAND_LOSS_SEQ, "
-                    .   "CLDEMAND.CLDEMAND_CLMT_SEQ, "
-                    .   "CLDEMAND.CLDEMAND_COV_LINE, "
-                    .   "CASE IMAGE.IMAGE_BATCH_PRT "
-                    .       "WHEN 'N' THEN 'O' "
-                    .       "ELSE 'C' "
-                    .   "END AS STATUS, "
-                    .   "CLDEMAND.CLDEMAND_ATTORNEY_EXTRK_TYPE, "
-                    .   "CLDEMAND.CLDEMAND_ATTORNEY_EXTRK_NUM, "
-                    .   "CLDEMAND.CLDEMAND_PROVIDER_EXTRK_TYPE, "
-                    .   "CLDEMAND.CLDEMAND_PROVIDER_EXTRK_NUM, "
-                    .   "CLDEMAND.CLDEMAND_BEGIN_SERVICE_DATE, "
-                    .   "CLDEMAND.CLDEMAND_END_SERVICE_DATE, "
-                    .   "CLDEMAND.CLDEMAND_DUE_DATE, "
-                    .   "CLDEMAND.CLDEMAND_RESPONSE_DATE, "
-                    .   "CLDEMAND.CLDEMAND_REASON, "
-                    .   "CLDEMAND.CLDEMAND_RESPONSE_NOT_APP, "
-                    .   "CLDEMAND.CLDEMAND_DEMAND_PROPER, "
-                    .   "CLDEMAND.CLDEMAND_RECV_DATE, "
-                    .   "IMAGE.IMAGE_OWNER, "
-                    .   "IMAGE.IMAGE_CREATE_USER, "
-                    .   "IMAGE.IMAGE_CREATE_DATE, "
-                    .   "IMAGE.IMAGE_CREATE_TIME, "
-                    .   "IMAGE.IMAGE_LAST_USER, "
-                    .   "IMAGE.IMAGE_LAST_DATE, "
-                    .   "IMAGE.IMAGE_LAST_TIME, "
-                    .   "IMAGE.IMAGE_FILE_NAME, "
-                    .   "IMAGE.IMAGE_BATCH_PRT "
-                    . "FROM "
-                    .   "OSIS.CLDEMAND, OSIS.IMAGE ";
-    echo $sql_dmd;
+    require_once('classes/portal.php');
+    $DB = portal::database();
+    $DB->query("SELECT 
+                INVENTORY.ID,
+                INVENTORY.CLASS_ID,
+                CLASSES.CLASS_NAME,
+                INVENTORY.TYPE_ID,
+                TYPES.TYPE_NAME,
+                INVENTORY_ATTRIBUTES.ATTRIBUTES,
+                INVENTORY.WEIGHT
+                FROM INVENTORY 
+                LEFT JOIN CLASSES ON CLASSES.ID = CLASS_ID
+                LEFT JOIN TYPES ON TYPES.ID = TYPE_ID
+                LEFT JOIN INVENTORY_ATTRIBUTES ON INVENTORY.ID = INVENTORY_ID");
+    $TEST = $DB->fetch_assoc_all();
+    print_r('<pre>');
+    foreach($TEST[0] AS $KEY=>$VALUE){
+        switch($KEY){
+            case 'WEIGHT':
+                $TEST[0]['ATTRIBUTES']->{'Metal Weight'} = $VALUE;
+                unset($TEST[0]['WEIGHT']);
+                break;
+            case 'ATTRIBUTES':
+                $TEST[0][$KEY] = json_decode($VALUE);
+                break;
+        }
+    }
+    print_r($TEST[0]);
+    $TEST_ATTRIBUTES = portal::warp('types','getTypeAttribute',array('CLASS_ID'=>$TEST[0]['CLASS_ID'],'TYPE_ID'=>$TEST[0]['TYPE_ID']));
+    foreach($TEST_ATTRIBUTES AS $KEY=>$VALUE){
+        
+    }
+    print_r($TEST_ATTRIBUTES);

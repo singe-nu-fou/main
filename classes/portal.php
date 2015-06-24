@@ -67,6 +67,7 @@
                     }
                 }
                 $DB->query("UPDATE USER_ACCOUNT LEFT JOIN USER_NAME ON USER_NAME_ID = USER_NAME.ID SET LAST_LOGIN = NOW()+0 WHERE USER_NAME = ?",array($_SESSION['USER_NAME']));
+                unset($_SESSION['ERROR_MSG']);
                 return '../?nav=home';
             }
             $_SESSION['ERROR_MSG'] = 'Incorrect username or password.';
