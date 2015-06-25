@@ -192,4 +192,8 @@
                         <span class="glyphicon glyphicon-search"></span>
                     </button>';
         }
+        
+        public static function delete(){
+            
+        }
     }

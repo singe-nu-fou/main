@@ -35,6 +35,7 @@
                 <div class="col-lg-4">
                     Type
                     <select name="inventory[class]" class="inventory-control form-control">
+                        <option></option>
                         <?php
                             $CLASSIFICATIONS = portal::warp('classifications','getClassification');
                             foreach($CLASSIFICATIONS AS $KEY=>$VALUE){
@@ -47,6 +48,7 @@
                 <div class="col-lg-4">
                     Classification
                     <select name="inventory[type]" class="inventory-control form-control">
+                        <option></option>
                         <?php
                             if(isset($_GET['class'])){
                                 $TYPES = portal::warp('classifications','getClassificationType',array('ID'=>$_GET['class']));
@@ -61,6 +63,7 @@
                 <div class="col-lg-4">
                     Condition
                     <select name="inventory[Condition]" class="form-control">
+                        <option></option>
                         <?php
                         $OPTIONS = array(
                             'Vintage',

@@ -211,7 +211,7 @@
         }
     }
     $THEAD = array(
-        'SKU'=>'SKU',
+        'SKU'=>'CONCAT(SKU,LOT)',
         'Class'=>'CLASS_NAME',
         'Type'=>'TYPE_NAME',
         'Sorter'=>'SORTER',

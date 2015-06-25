@@ -141,6 +141,7 @@
                             WHERE CHT.ID = ?',array($ID));
                 $RESULTS = $DB->fetch_assoc_all();
                 foreach($RESULTS AS $KEY=>$VALUE){
+                    var_dump($RESULTS);
                     extract($VALUE);
                     $PANEL .= '<div class="row" style="padding-bottom:15px;">';
                     $PANEL .= '<div class="col-lg-6 col-lg-offset-3">

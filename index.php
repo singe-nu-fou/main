@@ -129,6 +129,7 @@
             </div>
             <div class="row" style="padding-top:70px;">
                 <?php
+                    //var_dump($_SESSION);
                     portal::getMsg();
                     if(isset($_GET['nav'])){
                         portal::navigate($_GET['nav']);
