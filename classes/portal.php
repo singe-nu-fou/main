@@ -8,15 +8,20 @@
                 'GET' => $_GET
             ) : $DATA;
             if($ZONE !== 'portal'){
-                require_once($ZONE.'.php');
+                require_once('/'.$ZONE.'/'.$ZONE.'.php');
                 return $ZONE::$ACTION($DATA);
             }
             return self::$ACTION($DATA);
         }
         
         public static function navigate($NAV){
-            $URL = 'views/'.$NAV.'.php';
-            include($URL);
+            switch(true){
+                case isset($NAV):
+                case file_exists('/views/'.$NAV.'/'.$NAV.'.php'):
+                case file_exists('/models/'.$NAV.'/'.$NAV.'.php'):
+                    require_once('/models/'.$NAV.'/'.$NAV.'.php');
+                    require_once('views/'.$NAV.'/'.$NAV.'.php');
+            }
         }
         
         public static function database(){
@@ -28,20 +33,10 @@
             return $connection;
         }
         
-        public static function databaseOld(){
-            require_once('Zebra_Database\Zebra_Database.php');
-            $connection = new Zebra_Database();
-            $connection->debug = true;
-            $connection->connect('localhost','root','','lister');
-            $connection->set_charset();
-            return $connection;
-        }
-        
         public static function signIn($DATA){
             if(self::isSignedIn()){
                 return '../?nav=home';
             }
-            require_once('users.php');
             if(is_array($DATA['POST'])){
                 extract($DATA['POST']);
             }
@@ -50,7 +45,7 @@
                 return '../';
             }
             $DB = self::database();
-            if(users::userNameExists(array('USER_NAME'=>$USER_NAME)) && users::validUsername($USER_NAME) && users::validPassword($USER_PASSWORD)){
+            if(self::warp('user','userNameExists',array('USER_NAME'=>$USER_NAME)) && self::warp('user','validUsername',$USER_NAME) && self::warp('user','validPassword',$USER_PASSWORD)){
                 $DB->query("SELECT USER_ACCOUNT.ID,USER_NAME,USER_PASSWORD,USER_TYPE,LAST_LOGIN 
                             FROM USER_ACCOUNT 
                             LEFT JOIN USER_TYPE ON USER_TYPE_ID = USER_TYPE.ID 
@@ -68,7 +63,7 @@
                 }
                 $DB->query("UPDATE USER_ACCOUNT LEFT JOIN USER_NAME ON USER_NAME_ID = USER_NAME.ID SET LAST_LOGIN = NOW()+0 WHERE USER_NAME = ?",array($_SESSION['USER_NAME']));
                 unset($_SESSION['ERROR_MSG']);
-                return '../?nav=home';
+                return '../?nav=inventory';
             }
             $_SESSION['ERROR_MSG'] = 'Incorrect username or password.';
             return '../';
@@ -82,8 +77,8 @@
         }
         
         public static function isSignedIn(){
-            require_once('users.php');
-            if(isset($_SESSION['USER_NAME']) && users::userNameExists(array('USER_NAME'=>$_SESSION['USER_NAME']))){
+            require_once('/user/user.php');
+            if(isset($_SESSION['USER_NAME']) && self::warp('user','userNameExists',array('USER_NAME'=>$_SESSION['USER_NAME']))){
                 return true;
             }
             return false;
