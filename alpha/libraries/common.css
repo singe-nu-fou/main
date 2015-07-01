@@ -1,0 +1,81 @@
+* {
+    font-size: 12px;
+}
+
+table.selectable{
+    cursor:pointer;
+}
+
+.input-group-addon{
+    min-width:120px;
+    font-size:12px;
+    text-align:center;
+}
+
+.edit-sku{
+    min-width:50px;
+}
+
+a.list-group-item{
+    cursor:pointer;
+}
+
+div#reportList{
+    overflow-y:hidden;
+    padding:0px;
+}
+
+div.expandable,a.trigger{
+    font-size:12px;
+}
+
+div.expandable{
+    display:none;
+}
+
+th,td{
+    text-align:center;
+}
+
+#reportPanel{
+    position: fixed;
+}
+
+#reportPanel{
+    width:16%;
+}
+
+
+#reportContainer{
+    user-select: none; /* CSS3 (little to no support) */
+    -ms-user-select: none; /* IE 10+ */
+    -moz-user-select: none; /* Gecko (Firefox) */
+    -webkit-user-select: none; /* Webkit (Safari, Chrome) */
+}
+
+.listingTitle:hover{
+    cursor:pointer;
+}
+
+.table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
+    border-top: 1px solid #DDDDDD;
+    line-height: 1.42857;
+    padding: 8px;
+    vertical-align: middle;
+}
+
+#centerTD{
+    vertical-align:middle;
+}
+
+.table > thead > tr > td.active, .table > tbody > tr > td.active, .table > tfoot > tr > td.active, .table > thead > tr > th.active, .table > tbody > tr > th.active, .table > tfoot > tr > th.active, .table > thead > tr.active > td, .table > tbody > tr.active > td, .table > tfoot > tr.active > td, .table > thead > tr.active > th, .table > tbody > tr.active > th, .table > tfoot > tr.active > th {
+    background-color: #F58C69;
+}
+
+.table-hover > tbody > tr > td.active:hover, .table-hover > tbody > tr > th.active:hover, .table-hover > tbody > tr.active:hover > td, .table-hover > tbody > tr.active:hover > th {
+    background-color: #F58C69;
+}
+
+.table-hover > tbody > tr:hover > td, .table-hover > tbody > tr:hover > th {
+    background-color: #CCFFCC;
+}
