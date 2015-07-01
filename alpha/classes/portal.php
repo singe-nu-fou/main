@@ -77,7 +77,6 @@
         }
         
         public static function isSignedIn(){
-            require_once('/user/user.php');
             if(isset($_SESSION['USER_NAME']) && self::warp('user','userNameExists',array('USER_NAME'=>$_SESSION['USER_NAME']))){
                 return true;
             }
