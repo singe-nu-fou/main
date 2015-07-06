@@ -3,16 +3,16 @@
         public static function tbody(){
             extract($_GET);
             $DB = portal::database();
-            $DB->query('SELECT USER_ACCOUNT.ID,
+            $DB->query('SELECT user_account.ID,
                                USER_NAME,
                                IFNULL(USER_TYPE,"UNAVAILABLE") AS USER_TYPE,
                                IFNULL(USER_EMAIL,"UNAVAILABLE") AS USER_EMAIL,
                                LAST_LOGIN,
-                               USER_ACCOUNT.LAST_MODIFIED 
-                        FROM USER_ACCOUNT 
-                             LEFT JOIN USER_TYPE ON USER_TYPE_ID = USER_TYPE.ID 
-                             LEFT JOIN USER_NAME ON USER_NAME_ID = USER_NAME.ID
-                             LEFT JOIN USER_EMAIL ON USER_EMAIL_ID = USER_EMAIL.ID
+                               user_account.LAST_MODIFIED 
+                        FROM user_account 
+                             LEFT JOIN user_type ON USER_TYPE_ID = user_type.ID 
+                             LEFT JOIN user_name ON USER_NAME_ID = user_name.ID
+                             LEFT JOIN user_email ON USER_EMAIL_ID = user_email.ID
                         ORDER BY '.$orderBy.' '.$order);
             $TBODY = "<tbody>";
             while($RESULT = $DB->fetch_assoc()){
@@ -96,14 +96,14 @@
             foreach($IDS AS $ID){
                 $SQL_CONCAT[] = " USER_ACCOUNT.ID = ? ";
             }
-            $DB->query("SELECT USER_ACCOUNT.ID AS 'USER_ACCOUNT_ID',
+            $DB->query("SELECT user_acccount.ID AS 'USER_ACCOUNT_ID',
                                USER_NAME_ID,
                                USER_NAME,
                                USER_TYPE_ID,
                                USER_EMAIL 
-                        FROM USER_ACCOUNT 
-                               LEFT JOIN USER_NAME ON USER_NAME_ID = USER_NAME.ID 
-                               LEFT JOIN USER_EMAIL ON USER_EMAIL_ID = USER_EMAIL.ID
+                        FROM user_account 
+                               LEFT JOIN user_name ON USER_NAME_ID = user_name.ID 
+                               LEFT JOIN user_email ON USER_EMAIL_ID = user_email.ID
                         WHERE ".implode(' OR ',$SQL_CONCAT),$IDS);
             $RESULTS = $DB->fetch_assoc_all();
             $PANEL = '<div id="new" class="panel panel-default" style="margin-bottom:0px;">
@@ -189,15 +189,15 @@
                     return;
                 default:
                     $DB = portal::database();
-                    $DB->insert("USER_NAME",array("USER_NAME"=>$USER_NAME));
-                    $DB->select("ID","USER_NAME","USER_NAME = ?",array($USER_NAME));
+                    $DB->insert("user_name",array("USER_NAME"=>$USER_NAME));
+                    $DB->select("ID","user_name","USER_NAME = ?",array($USER_NAME));
                     $USER_NAME_ID = $DB->fetch_assoc();
                     $INSERT = array("USER_NAME_ID"=>$USER_NAME_ID['ID'],
                                     "USER_TYPE_ID"=>$USER_TYPE_ID,
                                     "USER_PASSWORD"=>MD5($USER_PASS));
                     if(filter_var($USER_EMAIL,FILTER_VALIDATE_EMAIL) && !self::userEmailExists(array('USER_EMAIL'=>$USER_EMAIL))){
-                        $DB->insert("USER_EMAIL",array('USER_EMAIL'=>$USER_EMAIL));
-                        $DB->select("ID","USER_EMAIL","USER_EMAIL = ?",array($USER_EMAIL));
+                        $DB->insert("user_email",array('USER_EMAIL'=>$USER_EMAIL));
+                        $DB->select("ID","user_email","USER_EMAIL = ?",array($USER_EMAIL));
                         $USER_EMAIL_ID = $DB->fetch_assoc();
                         $USER_EMAIL_ID = $USER_EMAIL_ID['ID'];
                     }
@@ -205,7 +205,7 @@
                         $USER_EMAIL_ID = 1;
                     }
                     $INSERT['USER_EMAIL_ID'] = $USER_EMAIL_ID;
-                    $DB->insert("USER_ACCOUNT",$INSERT);
+                    $DB->insert("user_account",$INSERT);
             }
         }
         
@@ -215,9 +215,9 @@
             $ERROR_MSG = array();
             $ERR_REASON = array();
             foreach($USERS AS $ID=>$USER){
-                $DB->select("USER_TYPE_ID,USER_NAME_ID,USER_EMAIL_ID","USER_ACCOUNT","ID = ?",array($ID));
+                $DB->select("USER_TYPE_ID,USER_NAME_ID,USER_EMAIL_ID","user_account","ID = ?",array($ID));
                 extract($DB->fetch_assoc());
-                $DB->select("USER_NAME","USER_NAME","ID = ?",array($USER_NAME_ID));
+                $DB->select("USER_NAME","user_name","ID = ?",array($USER_NAME_ID));
                 extract($DB->fetch_assoc());
                 switch(true){
                     case strlen(trim($USER['USER_PASS'])) === 0:
@@ -231,16 +231,16 @@
                                 default:
                                     $DB->update("USER_NAME",array("USER_NAME" => $USER['USER_NAME']),"ID = ?",array($USER_NAME_ID));
                                     if($USER['USER_TYPE_ID'] !== $USER_TYPE_ID){
-                                        $DB->update("USER_ACCOUNT",array("USER_TYPE_ID" => $USER['USER_TYPE_ID']),"USER_TYPE_ID = ?",array($USER_TYPE_ID));
+                                        $DB->update("user_account",array("USER_TYPE_ID" => $USER['USER_TYPE_ID']),"USER_TYPE_ID = ?",array($USER_TYPE_ID));
                                     }
                                     break;
                             }
                         }
                         if($USER['USER_TYPE_ID'] !== $USER_TYPE_ID){
-                            $DB->update("USER_ACCOUNT",array("USER_TYPE_ID" => $USER['USER_TYPE_ID']),"ID = ?",array($ID));
+                            $DB->update("user_account",array("USER_TYPE_ID" => $USER['USER_TYPE_ID']),"ID = ?",array($ID));
                         }
                         if(filter_var($USER['USER_EMAIL'],FILTER_VALIDATE_EMAIL) && !self::userEmailExists(array('USER_EMAIL'=>$USER['USER_EMAIL']))){
-                            $DB->update("USER_EMAIL",array("USER_EMAIL"=>$USER['USER_EMAIL']),"ID = ? ",array($USER_EMAIL_ID));
+                            $DB->update("user_email",array("USER_EMAIL"=>$USER['USER_EMAIL']),"ID = ? ",array($USER_EMAIL_ID));
                         }
                         break;
                     case self::validPassword($USER['USER_PASS']):
@@ -252,22 +252,22 @@
                                     $ERR_REASON[] = 'Please ensure the new username does not contain any special characters, is at least six characters long, and does not already exist!';
                                     break;
                                 default:
-                                    $DB->update("USER_NAME",array("USER_NAME" => $USER['USER_NAME']),"ID = ?",array($USER_NAME_ID));
+                                    $DB->update("user_name",array("USER_NAME" => $USER['USER_NAME']),"ID = ?",array($USER_NAME_ID));
                                     break;
                             }
                         }
                         if($USER['USER_PASS'] == $USER['CONF_PASS']){
-                            $DB->query("UPDATE USER_ACCOUNT SET USER_TYPE_ID = ".$USER['USER_TYPE_ID'].", USER_PASSWORD = '".MD5($USER['USER_PASS'])."', LAST_MODIFIED = NOW()+0 WHERE ID = '".$ID."'");
+                            $DB->query("UPDATE user_account SET USER_TYPE_ID = ".$USER['USER_TYPE_ID'].", USER_PASSWORD = '".MD5($USER['USER_PASS'])."', LAST_MODIFIED = NOW()+0 WHERE ID = '".$ID."'");
                         }
                         else{
                             $ERR_REASON[] = '<br>Please ensure the new password and the confirmation password match!';
                             $ERROR_MSG[] = $USER['USER_NAME'];
                         }
                         if($USER['USER_TYPE_ID'] !== $USER_TYPE_ID){
-                            $DB->update("USER_ACCOUNT",array("USER_TYPE_ID" => $USER['USER_TYPE_ID']),"ID = ?",array($ID));
+                            $DB->update("user_account",array("USER_TYPE_ID" => $USER['USER_TYPE_ID']),"ID = ?",array($ID));
                         }
                         if(filter_var($USER_EMAIL,FILTER_VALIDATE_EMAIL) && !self::userEmailExists(array('USER_EMAIL'=>$USER['USER_EMAIL']))){
-                            $DB->update("USER_EMAIL",array("USER_EMAIL"=>$USER['USER_EMAIL']),"ID = ? ",array($USER_EMAIL_ID));
+                            $DB->update("user_email",array("USER_EMAIL"=>$USER['USER_EMAIL']),"ID = ? ",array($USER_EMAIL_ID));
                         }
                         break;
                     default:
@@ -291,10 +291,10 @@
             $DB = portal::database();
             $IDS = json_decode($id);
             foreach($IDS AS $ID){
-                $DB->select("USER_NAME_ID","USER_ACCOUNT","ID = ?",array($ID));
+                $DB->select("USER_NAME_ID","user_account","ID = ?",array($ID));
                 extract($DB->fetch_assoc());
-                $DB->delete("USER_NAME","ID = ?",array($USER_NAME_ID));
-                $DB->delete("USER_ACCOUNT","ID = ?",array($ID));
+                $DB->delete("user_name","ID = ?",array($USER_NAME_ID));
+                $DB->delete("user_account","ID = ?",array($ID));
             }
         }
         
@@ -302,14 +302,14 @@
             extract($DATA);
             $DB = portal::database();
             if(isset($ID)){
-                $DB->select("USER_NAME","USER_NAME","ID = ?",array($ID));
+                $DB->select("USER_NAME","user_name","ID = ?",array($ID));
                 if($DB->fetch_assoc()){
                     //$_SESSION['ERROR_MSG'] = "Invalid username: This username already exists.";
                     return true;
                 }
             }
             elseif(isset($USER_NAME)){
-                $DB->select("USER_NAME","USER_NAME","USER_NAME = ?",array($USER_NAME));
+                $DB->select("USER_NAME","user_name","USER_NAME = ?",array($USER_NAME));
                 if($DB->fetch_assoc()){
                     //$_SESSION['ERROR_MSG'] = "Invalid username: This username already exists.";
                     return true;
@@ -322,7 +322,7 @@
             extract($DATA);
             $DB = portal::database();
             if(isset($ID)){
-                $DB->select("USER_EMAIL","USER_EMAIL","ID = ?",array($ID));
+                $DB->select("USER_EMAIL","user_email","ID = ?",array($ID));
                 if($DB->fetch_assoc()){
                     $_SESSION['ERROR_MSG'] = "Invalid email address: This email address is already tied to another account.";
                     return true;
@@ -373,18 +373,18 @@
             }
             switch($DATA['TYPE']){
                 case 'ALL':
-                    $DB->query("SELECT USER_ACCOUNT.ID, 
+                    $DB->query("SELECT user_account.ID, 
                                 USER_NAME 
-                                FROM USER_ACCOUNT 
-                                JOIN USER_TYPE ON USER_TYPE_ID = USER_TYPE.ID
-                                JOIN USER_NAME ON USER_NAME_ID = USER_NAME.ID");
+                                FROM user_account 
+                                JOIN user_type ON USER_TYPE_ID = user_type.ID
+                                JOIN user_name ON USER_NAME_ID = user_name.ID");
                     break;
                 default:
-                    $DB->query("SELECT USER_ACCOUNT.ID, 
+                    $DB->query("SELECT user_account.ID, 
                                 USER_NAME 
-                                FROM USER_ACCOUNT 
-                                JOIN USER_TYPE ON USER_TYPE_ID = USER_TYPE.ID
-                                JOIN USER_NAME ON USER_NAME_ID = USER_NAME.ID
+                                FROM user_account 
+                                JOIN user_type ON USER_TYPE_ID = user_type.ID
+                                JOIN user_name ON USER_NAME_ID = user_name.ID
                                 WHERE USER_TYPE = 'ADMIN' OR USER_TYPE = ?",array($TYPE));
                     break;
             }

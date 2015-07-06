@@ -8,7 +8,7 @@
                 'GET' => $_GET
             ) : $DATA;
             if($ZONE !== 'portal'){
-                require_once('/'.$ZONE.'/'.$ZONE.'.php');
+                require_once(__DIR__.'/'.$ZONE.'/'.$ZONE.'.php');
                 return $ZONE::$ACTION($DATA);
             }
             return self::$ACTION($DATA);
@@ -25,10 +25,10 @@
         }
         
         public static function database(){
-            require_once('Zebra_Database\Zebra_Database.php');
+            require_once(__DIR__.'/Zebra_Database/Zebra_Database.php');
             $connection = new Zebra_Database();
             $connection->debug = true;
-            $connection->connect('localhost','root','','alpha');
+            $connection->connect('localhost','spalmer','Spalm04350','alpha');
             $connection->set_charset();
             return $connection;
         }
@@ -46,10 +46,10 @@
             }
             $DB = self::database();
             if(self::warp('user','userNameExists',array('USER_NAME'=>$USER_NAME)) && self::warp('user','validUsername',$USER_NAME) && self::warp('user','validPassword',$USER_PASSWORD)){
-                $DB->query("SELECT USER_ACCOUNT.ID,USER_NAME,USER_PASSWORD,USER_TYPE,LAST_LOGIN 
-                            FROM USER_ACCOUNT 
-                            LEFT JOIN USER_TYPE ON USER_TYPE_ID = USER_TYPE.ID 
-                            LEFT JOIN USER_NAME ON USER_NAME_ID = USER_NAME.ID 
+                $DB->query("SELECT user_account.ID,USER_NAME,USER_PASSWORD,USER_TYPE,LAST_LOGIN 
+                            FROM user_account 
+                            LEFT JOIN user_type ON USER_TYPE_ID = user_type.ID 
+                            LEFT JOIN user_name ON USER_NAME_ID = user_name.ID 
                             WHERE USER_NAME = ?",array($DATA['POST']['USER_NAME']));
                 $RESULT = $DB->fetch_obj();
                 if(MD5($DATA['POST']['USER_PASSWORD']) !== $RESULT->USER_PASSWORD){
@@ -61,7 +61,7 @@
                         $_SESSION[$KEY] = $VALUE;
                     }
                 }
-                $DB->query("UPDATE USER_ACCOUNT LEFT JOIN USER_NAME ON USER_NAME_ID = USER_NAME.ID SET LAST_LOGIN = NOW()+0 WHERE USER_NAME = ?",array($_SESSION['USER_NAME']));
+                $DB->query("UPDATE user_account LEFT JOIN user_name ON USER_NAME_ID = user_name.ID SET LAST_LOGIN = NOW()+0 WHERE USER_NAME = ?",array($_SESSION['USER_NAME']));
                 unset($_SESSION['ERROR_MSG']);
                 return '../?nav=inventory';
             }
