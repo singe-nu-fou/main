@@ -29,6 +29,7 @@
             $connection = new Zebra_Database();
             $connection->debug = true;
             $connection->connect('localhost','spalmer','Spalm04350','alpha');
+            //$connection->connect('localhost','root','','alpha');
             $connection->set_charset();
             return $connection;
         }
