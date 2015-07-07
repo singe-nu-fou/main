@@ -15,24 +15,17 @@
         }
         
         public static function navigate($NAV){
-            clearstatcache();
-            $A = self::scrubString('/classes','',__DIR__.'/models/'.$NAV.'/'.$NAV.'.php');
-            $B = self::scrubString('/classes','',__DIR__.'/views/'.$NAV.'/'.$NAV.'.php');
-            var_dump($A);
-            var_dump($B);
-            var_dump(file_exists($A));
-            var_dump(file_exists($B));
             if(file_exists('C:\\wamp\www\main\alpha\models\\'.$NAV.'\\'.$NAV.'.php')){
                 require_once('/models/'.$NAV.'/'.$NAV.'.php');
             }
-            elseif(file_exists('../models/'.$NAV.'/'.$NAV.'.php')){
-                require_once('../models/'.$NAV.'/'.$NAV.'.php');
+            elseif(self::scrubString('/classes','',__DIR__.'/models/'.$NAV.'/'.$NAV.'.php')){
+                require_once(self::scrubString('/classes','',__DIR__.'/models/'.$NAV.'/'.$NAV.'.php'));
             }
             if(file_exists('C:\\wamp\www\main\alpha\views\\'.$NAV.'\\'.$NAV.'.php')){
                 require_once('/views/'.$NAV.'/'.$NAV.'.php');
             }
-            elseif(file_exists('../views/'.$NAV.'/'.$NAV.'.php')){
-                require_once('../views/'.$NAV.'/'.$NAV.'.php');
+            elseif(file_exists(self::scrubString('/classes','',__DIR__.'/views/'.$NAV.'/'.$NAV.'.php'))){
+                require_once(self::scrubString('/classes','',__DIR__.'/views/'.$NAV.'/'.$NAV.'.php'));
             }
         }
         
