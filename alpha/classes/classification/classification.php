@@ -119,7 +119,7 @@
                 extract($DATA);
             }
             $DB = portal::database();
-            $DB->query("SELECT category_has_classification.ID AS CATEGORY_HAS_CLASSIFICATION_ID FROM category_has_classification LEFT JOIN classification ON CLASSIFICATION_ID = classification.ID WHERE category.ID = ? AND classification.ID = ?",array($CATEGORY_ID,$CLASSIFICATION_ID));
+            $DB->query("SELECT category_has_classification.ID AS CATEGORY_HAS_CLASSIFICATION_ID FROM category_has_classification LEFT JOIN classification ON CLASSIFICATION_ID = classification.ID WHERE CATEGORY_ID = ? AND classification.ID = ?",array($CATEGORY_ID,$CLASSIFICATION_ID));
             if($DATA = $DB->fetch_assoc()){
                 extract($DATA);
             }
