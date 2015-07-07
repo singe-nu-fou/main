@@ -4,7 +4,7 @@
             extract($_GET);
             $DB = portal::database();
             $DB->query('SELECT *
-                        FROM CLASSIFICATION
+                        FROM classification
                         ORDER BY '.$orderBy.' '.$order);
             $TBODY = "<tbody>";
             while($RESULT = $DB->fetch_assoc()){
@@ -56,7 +56,7 @@
                 $SQL_CONCAT[] = " ID = ? ";
             }
             $DB->query("SELECT ID AS 'CLASSIFICATION_ID',CLASSIFICATION
-                        FROM CLASSIFICATION
+                        FROM classification
                         WHERE ".implode(' OR ',$SQL_CONCAT),$IDS);
             $RESULTS = $DB->fetch_assoc_all();
             $PANEL = '<div id="new" class="panel panel-default" style="margin-bottom:0px;">
@@ -96,7 +96,7 @@
                 extract($DATA);
             }
             $DB = portal::database();
-            $SQL = "SELECT * FROM CLASSIFICATION";
+            $SQL = "SELECT * FROM classification";
             switch(true){
                 case isset($ID) && isset($NAME) && self::isRealUserClassification($DATA):
                     $DB->query($SQL." WHERE ID = ? AND CLASSIFICATION = ?",array($ID,$NAME));
@@ -119,12 +119,12 @@
                 extract($DATA);
             }
             $DB = portal::database();
-            $DB->query("SELECT CATEGORY_HAS_CLASSIFICATION.ID AS CATEGORY_HAS_CLASSIFICATION_ID FROM CATEGORY_HAS_CLASSIFICATION LEFT JOIN CLASSIFICATION ON CLASSIFICATION_ID = CLASSIFICATION.ID WHERE CLASSIFICATION.ID = ? AND CLASSIFICATION.ID = ?",array($CATEGORY_ID,$CLASSIFICATION_ID));
+            $DB->query("SELECT category_has_classification.ID AS CATEGORY_HAS_CLASSIFICATION_ID FROM category_has_classification LEFT JOIN classification ON CLASSIFICATION_ID = classification.ID WHERE category.ID = ? AND classification.ID = ?",array($CATEGORY_ID,$CLASSIFICATION_ID));
             if($DATA = $DB->fetch_assoc()){
                 extract($DATA);
             }
             if(isset($CATEGORY_HAS_CLASSIFICATION_ID)){
-                $DB->query("SELECT CHARACTERISTIC.ID,CHARACTERISTIC FROM CLASSIFICATION_HAS_CHARACTERISTIC LEFT JOIN CHARACTERISTIC ON CHARACTERISTIC_ID = CHARACTERISTIC.ID WHERE CATEGORY_HAS_CLASSIFICATION_ID = ? ORDER BY SEQUENCE",array($CATEGORY_HAS_CLASSIFICATION_ID));
+                $DB->query("SELECT characteristic.ID,CHARACTERISTIC FROM category_has_classification LEFT JOIN characteristic ON CHARACTERISTIC_ID = characteristic.ID WHERE CATEGORY_HAS_CLASSIFICATION_ID = ? ORDER BY SEQUENCE",array($CATEGORY_HAS_CLASSIFICATION_ID));
                 return $DB->fetch_assoc_all();
             }
         }
@@ -139,13 +139,13 @@
             $DB = portal::database();
             switch(true){
                 case isset($ID) && isset($NAME):
-                    $DB->query("SELECT * FROM CLASSIFICATION WHERE ID = ? AND CLASSIFICATION = ?",array($ID,$NAME));
+                    $DB->query("SELECT * FROM classification WHERE ID = ? AND CLASSIFICATION = ?",array($ID,$NAME));
                     break;
                 case isset($ID):
-                    $DB->query("SELECT * FROM CLASSIFICATION WHERE ID = ?",array($ID));
+                    $DB->query("SELECT * FROM classification WHERE ID = ?",array($ID));
                     break;
                 case isset($NAME):
-                    $DB->query("SELECT * FROM CLASSIFICATION WHERE CLASSIFICATION = ?",array($NAME));
+                    $DB->query("SELECT * FROM classification WHERE CLASSIFICATION = ?",array($NAME));
                     break;
             }
             if($DB->fetch_assoc()){
@@ -161,7 +161,7 @@
                 return;
             }
             $DB = portal::database();
-            $DB->insert("CLASSIFICATION",array("CLASSIFICATION"=>$CLASSIFICATION));
+            $DB->insert("classification",array("CLASSIFICATION"=>$CLASSIFICATION));
         }
         
         public static function update($DATA){
@@ -172,7 +172,7 @@
                 }
                 else{
                     $DB = portal::database();
-                    $DB->update("CLASSIFICATION",array("CLASSIFICATION"=>$CLASSIFICATION['CLASSIFICATION'],"LAST_MODIFIED"=>date('Y-m-d H:i:s')),"ID = ?",array($ID));
+                    $DB->update("classification",array("CLASSIFICATION"=>$CLASSIFICATION['CLASSIFICATION'],"LAST_MODIFIED"=>date('Y-m-d H:i:s')),"ID = ?",array($ID));
                 }
             }
         }
@@ -182,7 +182,7 @@
             $DB = portal::database();
             $IDS = json_decode($id);
             foreach($IDS AS $ID){
-                $DB->delete("CLASSIFICATION","ID = ?",array($ID));
+                $DB->delete("classification","ID = ?",array($ID));
             }
         }
     }

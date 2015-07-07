@@ -119,7 +119,7 @@
                 extract($DATA);
             }
             $DB = portal::database();
-            $DB->query("SELECT classification.ID,CLASSIFICATION FROM category_has_classification LEFT JOIN category ON CATEGORY_ID = category.ID LEFT JOIN CLASSIFICATION ON CLASSIFICATION_ID = classification.ID WHERE category.ID = ?",array($ID));
+            $DB->query("SELECT classification.ID,CLASSIFICATION FROM category_has_classification LEFT JOIN category ON CATEGORY_ID = category.ID LEFT JOIN classification ON CLASSIFICATION_ID = classification.ID WHERE category.ID = ?",array($ID));
             return $DB->fetch_assoc_all();
         }
         

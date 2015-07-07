@@ -3,20 +3,20 @@
         public static function tbody(){
             extract($_GET);
             $DB = portal::database();
-            $DB->query('SELECT INVENTORY.ID,
+            $DB->query('SELECT inventory.ID,
                         SKU,
                         CATEGORY,
                         CLASSIFICATION,
                         WEIGHT,
                         USER_NAME,
                         DATE_CREATED,
-                        INVENTORY.LAST_MODIFIED
-                        FROM INVENTORY 
-                        LEFT JOIN CATEGORY ON CATEGORY_ID = CATEGORY.ID 
-                        LEFT JOIN CLASSIFICATION ON CLASSIFICATION_ID = CLASSIFICATION.ID
-                        LEFT JOIN INVENTORY_WORKED_BY ON INVENTORY.ID = INVENTORY_ID
-                        LEFT JOIN USER_ACCOUNT ON USER_ACCOUNT_ID = USER_ACCOUNT.ID
-                        LEFT JOIN USER_NAME ON USER_NAME_ID = USER_NAME.ID
+                        inventory.LAST_MODIFIED
+                        FROM inventory 
+                        LEFT JOIN category ON CATEGORY_ID = category.ID 
+                        LEFT JOIN classification ON CLASSIFICATION_ID = classification.ID
+                        LEFT JOIN inventory_worked_by ON inventory.ID = INVENTORY_ID
+                        LEFT JOIN user_account ON USER_ACCOUNT_ID = user_account.ID
+                        LEFT JOIN user_name ON USER_NAME_ID = user_name.ID
                         ORDER BY '.$orderBy.' '.$order);
             $TBODY = "<tbody>";
             while($RESULT = $DB->fetch_assoc()){
@@ -40,18 +40,18 @@
             extract($_GET);
             $IDS = json_decode($id);
             foreach($IDS AS $ID){
-                $SQL_CONCAT[] = " INVENTORY.ID = ? ";
+                $SQL_CONCAT[] = " inventory.ID = ? ";
             }
-            $DB->query("SELECT INVENTORY.ID AS 'INVENTORY_ID',
+            $DB->query("SELECT inventory.ID AS 'INVENTORY_ID',
                         SKU,
                         CATEGORY_ID,
                         CLASSIFICATION_ID,
-                        INVENTORY.WEIGHT,
+                        inventory.WEIGHT,
                         CHARACTERISTICS
-                        FROM INVENTORY 
-                        LEFT JOIN CATEGORY ON CATEGORY_ID = CATEGORY.ID 
-                        LEFT JOIN CLASSIFICATION ON CLASSIFICATION_ID = CLASSIFICATION.ID
-                        LEFT JOIN INVENTORY_CHARACTERISTIC ON INVENTORY.ID = INVENTORY_ID
+                        FROM inventory 
+                        LEFT JOIN category ON CATEGORY_ID = category.ID 
+                        LEFT JOIN classification ON CLASSIFICATION_ID = classification.ID
+                        LEFT JOIN inventory_characteristic ON inventory.ID = INVENTORY_ID
                         WHERE ".implode(' OR ',$SQL_CONCAT),$IDS);
             $INVENTORY = $DB->fetch_assoc_all();
             $CATEGORIES = portal::warp('category','getCategory');

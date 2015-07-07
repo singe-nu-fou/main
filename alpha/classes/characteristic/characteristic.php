@@ -4,7 +4,7 @@
             extract($_GET);
             $DB = portal::database();
             $DB->query('SELECT *
-                        FROM CHARACTERISTIC
+                        FROM characteristic
                         ORDER BY '.$orderBy.' '.$order);
             $TBODY = "<tbody>";
             while($RESULT = $DB->fetch_assoc()){
@@ -53,10 +53,10 @@
             extract($_GET);
             $IDS = json_decode($id);
             foreach($IDS AS $ID){
-                $SQL_CONCAT[] = " CHARACTERISTIC.ID = ? ";
+                $SQL_CONCAT[] = " characteristic.ID = ? ";
             }
             $DB->query("SELECT ID AS 'CHARACTERISTIC_ID',CHARACTERISTIC
-                        FROM CHARACTERISTIC
+                        FROM characteristic
                         WHERE ".implode(' OR ',$SQL_CONCAT),$IDS);
             $RESULTS = $DB->fetch_assoc_all();
             $PANEL = '<div id="new" class="panel panel-default" style="margin-bottom:0px;">
@@ -96,7 +96,7 @@
                 extract($DATA);
             }
             $DB = portal::database();
-            $SQL = "SELECT * FROM CHARACTERISTIC";
+            $SQL = "SELECT * FROM characteristic";
             switch(true){
                 case isset($ID) && isset($NAME) && self::isRealCharacteristic($DATA):
                     $DB->query($SQL." WHERE ID = ? AND CHARACTERISTIC = ?",array($ID,$NAME));
@@ -124,13 +124,13 @@
             $DB = portal::database();
             switch(true){
                 case isset($ID) && isset($NAME):
-                    $DB->query("SELECT * FROM CHARACTERISTIC WHERE ID = ? AND CHARACTERISTIC = ?",array($ID,$NAME));
+                    $DB->query("SELECT * FROM characteristic WHERE ID = ? AND CHARACTERISTIC = ?",array($ID,$NAME));
                     break;
                 case isset($ID):
-                    $DB->query("SELECT * FROM CHARACTERISTIC WHERE ID = ?",array($ID));
+                    $DB->query("SELECT * FROM characteristic WHERE ID = ?",array($ID));
                     break;
                 case isset($NAME):
-                    $DB->query("SELECT * FROM CHARACTERISTIC WHERE CHARACTERISTIC = ?",array($NAME));
+                    $DB->query("SELECT * FROM characteristic WHERE CHARACTERISTIC = ?",array($NAME));
                     break;
             }
             if($DB->fetch_assoc()){
@@ -146,7 +146,7 @@
                 return;
             }
             $DB = portal::database();
-            $DB->insert("CHARACTERISTIC",array("CHARACTERISTIC"=>$CHARACTERISTIC));
+            $DB->insert("characteristic",array("CHARACTERISTIC"=>$CHARACTERISTIC));
         }
         
         public static function update($DATA){
@@ -157,7 +157,7 @@
                 }
                 else{
                     $DB = portal::database();
-                    $DB->update("CHARACTERISTIC",array("CHARACTERISTIC"=>$CHARACTERISTIC['CHARACTERISTIC'],"LAST_MODIFIED"=>date('Y-m-d H:i:s')),"ID = ?",array($ID));
+                    $DB->update("characteristic",array("CHARACTERISTIC"=>$CHARACTERISTIC['CHARACTERISTIC'],"LAST_MODIFIED"=>date('Y-m-d H:i:s')),"ID = ?",array($ID));
                 }
             }
         }
@@ -167,7 +167,7 @@
             $DB = portal::database();
             $IDS = json_decode($id);
             foreach($IDS AS $ID){
-                $DB->delete("CHARACTERISTIC","ID = ?",array($ID));
+                $DB->delete("characteristic","ID = ?",array($ID));
             }
         }
     }
