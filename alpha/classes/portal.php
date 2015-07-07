@@ -19,14 +19,14 @@
             if(file_exists('C:\\wamp\www\main\alpha\models\\'.$NAV.'\\'.$NAV.'.php')){
                 require_once('/models/'.$NAV.'/'.$NAV.'.php');
             }
-            elseif(file_exists('var/www/html/alpha/models/'.$NAV.'/'.$NAV.'.php')){
-                require_once('var/www/html/alpha/models/'.$NAV.'/'.$NAV.'.php');
+            elseif(file_exists('../models/'.$NAV.'/'.$NAV.'.php')){
+                require_once('../models/'.$NAV.'/'.$NAV.'.php');
             }
             if(file_exists('C:\\wamp\www\main\alpha\views\\'.$NAV.'\\'.$NAV.'.php')){
                 require_once('/views/'.$NAV.'/'.$NAV.'.php');
             }
-            elseif(file_exists('var/www/html/alpha/views/'.$NAV.'/'.$NAV.'.php')){
-                require_once('var/www/html/alpha/views/'.$NAV.'/'.$NAV.'.php');
+            elseif(file_exists('../views/'.$NAV.'/'.$NAV.'.php')){
+                require_once('../views/'.$NAV.'/'.$NAV.'.php');
             }
         }
         
