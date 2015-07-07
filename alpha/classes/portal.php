@@ -16,8 +16,8 @@
         
         public static function navigate($NAV){
             clearstatcache();
-            $A = __DIR__.'/models/'.$NAV.'/'.$NAV.'.php';
-            $B = __DIR__.'/views/'.$NAV.'/'.$NAV.'.php';
+            $A = self::scrubString('/classes','',__DIR__.'/models/'.$NAV.'/'.$NAV.'.php');
+            $B = self::scrubString('/classes','',__DIR__.'/views/'.$NAV.'/'.$NAV.'.php');
             var_dump($A);
             var_dump($B);
             var_dump(file_exists($A));
