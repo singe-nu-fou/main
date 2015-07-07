@@ -4,7 +4,7 @@
             extract($_GET);
             $DB = portal::database();
             $DB->query('SELECT *
-                        FROM USER_TYPE
+                        FROM user_type
                         ORDER BY '.$orderBy.' '.$order);
             $TBODY = "<tbody>";
             while($RESULT = $DB->fetch_assoc()){
@@ -53,10 +53,10 @@
             extract($_GET);
             $IDS = json_decode($id);
             foreach($IDS AS $ID){
-                $SQL_CONCAT[] = " USER_TYPE.ID = ? ";
+                $SQL_CONCAT[] = " user_type.ID = ? ";
             }
             $DB->query("SELECT ID AS 'USER_TYPE_ID',USER_TYPE
-                        FROM USER_TYPE
+                        FROM user_type
                         WHERE ".implode(' OR ',$SQL_CONCAT),$IDS);
             $RESULTS = $DB->fetch_assoc_all();
             $PANEL = '<div id="new" class="panel panel-default" style="margin-bottom:0px;">
@@ -96,7 +96,7 @@
                 extract($DATA);
             }
             $DB = portal::database();
-            $SQL = "SELECT * FROM USER_TYPE";
+            $SQL = "SELECT * FROM user_type";
             switch(true){
                 case isset($ID) && isset($NAME) && self::isRealUserType($DATA):
                     $DB->query($SQL." WHERE ID = ? AND USER_TYPE = ?",array($ID,$NAME));
@@ -124,13 +124,13 @@
             $DB = portal::database();
             switch(true){
                 case isset($ID) && isset($NAME):
-                    $DB->query("SELECT * FROM USER_TYPE WHERE ID = ? AND USER_TYPE = ?",array($ID,$NAME));
+                    $DB->query("SELECT * FROM user_type WHERE ID = ? AND USER_TYPE = ?",array($ID,$NAME));
                     break;
                 case isset($ID):
-                    $DB->query("SELECT * FROM USER_TYPE WHERE ID = ?",array($ID));
+                    $DB->query("SELECT * FROM user_type WHERE ID = ?",array($ID));
                     break;
                 case isset($NAME):
-                    $DB->query("SELECT * FROM USER_TYPE WHERE USER_TYPE = ?",array($NAME));
+                    $DB->query("SELECT * FROM user_type WHERE USER_TYPE = ?",array($NAME));
                     break;
             }
             if($DB->fetch_assoc()){
@@ -146,7 +146,7 @@
                 return;
             }
             $DB = portal::database();
-            $DB->insert("USER_TYPE",array("USER_TYPE"=>$USER_TYPE));
+            $DB->insert("user_type",array("USER_TYPE"=>$USER_TYPE));
         }
         
         public static function update($DATA){
@@ -157,7 +157,7 @@
                 }
                 else{
                     $DB = portal::database();
-                    $DB->update("USER_TYPE",array("USER_TYPE"=>$TYPE['USER_TYPE'],"LAST_MODIFIED"=>date('Y-m-d H:i:s')),"ID = ?",array($ID));
+                    $DB->update("user_type",array("USER_TYPE"=>$TYPE['USER_TYPE'],"LAST_MODIFIED"=>date('Y-m-d H:i:s')),"ID = ?",array($ID));
                 }
             }
         }
@@ -167,7 +167,7 @@
             $DB = portal::database();
             $IDS = json_decode($id);
             foreach($IDS AS $ID){
-                $DB->delete("USER_TYPE","ID = ?",array($ID));
+                $DB->delete("user_type","ID = ?",array($ID));
             }
         }
     }

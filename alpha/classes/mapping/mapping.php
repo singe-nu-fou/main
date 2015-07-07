@@ -4,13 +4,13 @@
             extract($_GET);
             $DB = portal::database();
             $DB->query('SELECT 
-                        CATEGORY_HAS_CLASSIFICATION.ID,
+                        category_has_classification.ID,
                         CATEGORY,
-                        CLASSIFICATION.CLASSIFICATION,
-                        CATEGORY_HAS_CLASSIFICATION.LAST_MODIFIED
-                        FROM CATEGORY_HAS_CLASSIFICATION AS CATEGORY_HAS_CLASSIFICATION 
-                        JOIN CATEGORY ON CATEGORY_HAS_CLASSIFICATION.CATEGORY_ID = CATEGORY.ID 
-                        JOIN CLASSIFICATION ON CATEGORY_HAS_CLASSIFICATION.CLASSIFICATION_ID = CLASSIFICATION.ID 
+                        classification.CLASSIFICATION,
+                        category_has_classification.LAST_MODIFIED
+                        FROM category_has_classification 
+                        JOIN category ON category_has_classification.CATEGORY_ID = category.ID 
+                        JOIN classification ON category_has_classification.CLASSIFICATION_ID = classification.ID 
                         ORDER BY '.$orderBy.' '.$order);
             $TBODY = "<tbody>";
             while($RESULT = $DB->fetch_assoc()){
@@ -56,7 +56,6 @@
                                             </span>
                                             <select id="MAP_CLASS" name="CATEGORY_ID" class="map_control form-control">';
             $CATEGORY = portal::warp('category','getCategory');
-            //$CLASSIFICATIONS = classifications::getClassification();
             foreach($CATEGORY AS $VALUE){
                 extract($VALUE);
                 $PANEL .= '<option value="'.$ID.'"'.((isset($_POST['CATEGORY_ID']) && $ID === $_POST['CATEGORY_ID']) ? ' selected' : '').'>'.$CATEGORY.'</option>';
@@ -71,7 +70,6 @@
                                             </span>
                                             <select id="MAP_TYPE" name="CLASSIFICATION_ID" class="map_control form-control">';
             $CLASSIFICATION = portal::warp('classification','getClassification');
-            //$CLASSIFICATION = types::getType();
             foreach($CLASSIFICATION AS $VALUE){
                 extract($VALUE);
                 $PANEL .= '<option value="'.$ID.'"'.((isset($_POST['CLASSIFICATION_ID']) && $ID === $_POST['CLASSIFICATION_ID']) ? ' selected' : '').'>'.$CLASSIFICATION.'</option>';
@@ -122,18 +120,18 @@
             $IDS = json_decode($id);
             foreach($IDS AS $ID){
                 $DB->query('SELECT 
-                            CATEGORY_HAS_CLASSIFICATION.ID,
-                            CATEGORY.ID,
-                            CATEGORY.CATEGORY,
-                            CLASSIFICATION.ID,
-                            CLASSIFICATION.CLASSIFICATION,
-                            CONCAT(\'{\',GROUP_CONCAT(CONCAT(\'"\',CHARACTERISTICS.ID,\'"\',\':"\',CHARACTERISTICS.CHARACTERISTIC_NAME,\'"\')),\'}\') AS CHARACTERISTICS
-                            FROM CATEGORY_HAS_CLASSIFICATION AS CATEGORY_HAS_CLASSIFICATION 
-                            JOIN CLASSIFICATION_HAS_CHARACTERISTICS AS THA ON CATEGORY_HAS_CLASSIFICATION.ID = THA.CATEGORY_HAS_CLASSIFICATION_ID 
-                            JOIN CATEGORY ON CATEGORY_HAS_CLASSIFICATION.CATEGORY_ID = CATEGORY.ID 
-                            JOIN CLASSIFICATION ON CATEGORY_HAS_CLASSIFICATION.CLASSIFICATION_ID = CLASSIFICATION.ID 
-                            JOIN CHARACTERISTICS ON THA.CHARACTERISTIC_ID = CHARACTERISTICS.ID
-                            WHERE CATEGORY_HAS_CLASSIFICATION.ID = ?',array($ID));
+                            category_has_classification.ID,
+                            category.ID,
+                            category.CATEGORY,
+                            classification.ID,
+                            classification.CLASSIFICATION,
+                            CONCAT(\'{\',GROUP_CONCAT(CONCAT(\'"\',characteristics.ID,\'"\',\':"\',characteristics.CHARACTERISTIC_NAME,\'"\')),\'}\') AS CHARACTERISTICS
+                            FROM category_has_classification 
+                            JOIN classification_has_characteristics AS THA ON CATEGORY_HAS_CLASSIFICATION.ID = THA.CATEGORY_HAS_CLASSIFICATION_ID 
+                            JOIN category ON category_has_classification.CATEGORY_ID = category.ID 
+                            JOIN classification ON category_has_classification.CLASSIFICATION_ID = classification.ID 
+                            JOIN characteristics ON THA.CHARACTERISTIC_ID = characteristics.ID
+                            WHERE category_has_classification.ID = ?',array($ID));
                 $RESULTS = $DB->fetch_assoc_all();
                 foreach($RESULTS AS $KEY=>$VALUE){
                     var_dump($RESULTS);
@@ -186,18 +184,16 @@
         public static function insert($DATA){
             $DB = portal::database();
             extract($DATA['POST']);
-            //extract(classifications::getClassification(array('ID'=>$CATEGORY_ID)));
-            //extract(types::getType(array('ID'=>$CLASSIFICATION_ID)));
-            $DB->select("*","CATEGORY_HAS_CLASSIFICATION","CATEGORY_ID = ? AND CLASSIFICATION_ID = ?",array($CATEGORY_ID,$CLASSIFICATION_ID));
+            $DB->select("*","category_has_classification","CATEGORY_ID = ? AND CLASSIFICATION_ID = ?",array($CATEGORY_ID,$CLASSIFICATION_ID));
             if($EXISTS = $DB->fetch_assoc()){
-                $DB->delete("CATEGORY_HAS_CLASSIFICATION","ID = ?",array($EXISTS['ID']));
-                $DB->delete("CLASSIFICATION_HAS_CHARACTERISTIC","CATEGORY_HAS_CLASSIFICATION_ID = ?",array($EXISTS['ID']));
+                $DB->delete("category_has_classification","ID = ?",array($EXISTS['ID']));
+                $DB->delete("classification_has_characteristic","CATEGORY_HAS_CLASSIFICATION_ID = ?",array($EXISTS['ID']));
             }
-            $DB->insert("CATEGORY_HAS_CLASSIFICATION",array("CATEGORY_ID"=>$CATEGORY_ID,"CLASSIFICATION_ID"=>$CLASSIFICATION_ID));
-            $DB->select("ID AS 'CATEGORY_HAS_CLASSIFICATION_ID'","CATEGORY_HAS_CLASSIFICATION","CATEGORY_ID = ? AND CLASSIFICATION_ID = ?",array($CATEGORY_ID,$CLASSIFICATION_ID));
+            $DB->insert("category_has_classification",array("CATEGORY_ID"=>$CATEGORY_ID,"CLASSIFICATION_ID"=>$CLASSIFICATION_ID));
+            $DB->select("ID AS 'CATEGORY_HAS_CLASSIFICATION_ID'","category_has_classification","CATEGORY_ID = ? AND CLASSIFICATION_ID = ?",array($CATEGORY_ID,$CLASSIFICATION_ID));
             extract($DB->fetch_assoc());
             foreach($CHARACTERISTIC_ID AS $KEY=>$VALUE){
-                $DB->insert("CLASSIFICATION_HAS_CHARACTERISTIC",array("CATEGORY_HAS_CLASSIFICATION_ID"=>$CATEGORY_HAS_CLASSIFICATION_ID,"CHARACTERISTIC_ID"=>$VALUE,"SEQUENCE"=>$KEY));
+                $DB->insert("classification_has_characteristic",array("CATEGORY_HAS_CLASSIFICATION_ID"=>$CATEGORY_HAS_CLASSIFICATION_ID,"CHARACTERISTIC_ID"=>$VALUE,"SEQUENCE"=>$KEY));
             }
         }
         
@@ -206,8 +202,8 @@
             $DB = portal::database();
             $IDS = json_decode($id);
             foreach($IDS AS $ID){
-                $DB->delete("CATEGORY_HAS_CLASSIFICATION","ID = ?",array($ID));
-                $DB->delete("CLASSIFICATION_HAS_CHARACTERISTIC","CATEGORY_HAS_CLASSIFICATION_ID = ?",array($ID));
+                $DB->delete("category_has_classification","ID = ?",array($ID));
+                $DB->delete("classification_has_characteristic","CATEGORY_HAS_CLASSIFICATION_ID = ?",array($ID));
             }
         }
     }
