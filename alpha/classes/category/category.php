@@ -4,7 +4,7 @@
             extract($_GET);
             $DB = portal::database();
             $DB->query('SELECT *
-                        FROM CATEGORY
+                        FROM category
                         ORDER BY '.$orderBy.' '.$order);
             $TBODY = "<tbody>";
             while($RESULT = $DB->fetch_assoc()){
@@ -56,7 +56,7 @@
                 $SQL_CONCAT[] = " ID = ? ";
             }
             $DB->query("SELECT ID AS 'CATEGORY_ID',CATEGORY
-                        FROM CATEGORY
+                        FROM category
                         WHERE ".implode(' OR ',$SQL_CONCAT),$IDS);
             $RESULTS = $DB->fetch_assoc_all();
             $PANEL = '<div id="new" class="panel panel-default" style="margin-bottom:0px;">
@@ -96,7 +96,7 @@
                 extract($DATA);
             }
             $DB = portal::database();
-            $SQL = "SELECT * FROM CATEGORY";
+            $SQL = "SELECT * FROM category";
             switch(true){
                 case isset($ID) && isset($NAME) && self::isRealUserType($DATA):
                     $DB->query($SQL." WHERE ID = ? AND CATEGORY = ?",array($ID,$NAME));
@@ -119,7 +119,7 @@
                 extract($DATA);
             }
             $DB = portal::database();
-            $DB->query("SELECT CLASSIFICATION.ID,CLASSIFICATION FROM CATEGORY_HAS_CLASSIFICATION LEFT JOIN CATEGORY ON CATEGORY_ID = CATEGORY.ID LEFT JOIN CLASSIFICATION ON CLASSIFICATION.ID = CLASSIFICATION.ID WHERE CATEGORY.ID = ?",array($ID));
+            $DB->query("SELECT classification.ID,CLASSIFICATION FROM category_has_classification LEFT JOIN category ON CATEGORY_ID = category.ID LEFT JOIN CLASSIFICATION ON CLASSIFICATION_ID = classification.ID WHERE category.ID = ?",array($ID));
             return $DB->fetch_assoc_all();
         }
         
@@ -133,13 +133,13 @@
             $DB = portal::database();
             switch(true){
                 case isset($ID) && isset($NAME):
-                    $DB->query("SELECT * FROM CATEGORY WHERE ID = ? AND CATEGORY = ?",array($ID,$NAME));
+                    $DB->query("SELECT * FROM category WHERE ID = ? AND CATEGORY = ?",array($ID,$NAME));
                     break;
                 case isset($ID):
-                    $DB->query("SELECT * FROM CATEGORY WHERE ID = ?",array($ID));
+                    $DB->query("SELECT * FROM category WHERE ID = ?",array($ID));
                     break;
                 case isset($NAME):
-                    $DB->query("SELECT * FROM CATEGORY WHERE CATEGORY = ?",array($NAME));
+                    $DB->query("SELECT * FROM category WHERE CATEGORY = ?",array($NAME));
                     break;
             }
             if($DB->fetch_assoc()){
@@ -155,7 +155,7 @@
                 return;
             }
             $DB = portal::database();
-            $DB->insert("CATEGORY",array("CATEGORY"=>$CATEGORY));
+            $DB->insert("category",array("CATEGORY"=>$CATEGORY));
         }
         
         public static function update($DATA){
@@ -166,7 +166,7 @@
                 }
                 else{
                     $DB = portal::database();
-                    $DB->update("CATEGORY",array("CATEGORY"=>$CATEGORY['CATEGORY'],"LAST_MODIFIED"=>date('Y-m-d H:i:s')),"ID = ?",array($ID));
+                    $DB->update("category",array("CATEGORY"=>$CATEGORY['CATEGORY'],"LAST_MODIFIED"=>date('Y-m-d H:i:s')),"ID = ?",array($ID));
                 }
             }
         }
