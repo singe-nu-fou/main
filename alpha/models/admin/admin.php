@@ -1,6 +1,6 @@
 <?php
     $SUBNAV = isset($_GET['subnav']) ? $_GET['subnav'] : NULL;
-    $LIST_ITEMS = array(
+    $LIST = array(
         'Categories' => array(
             'subnav' => 'category',
             'params' => '&orderBy=ID&order=ASC',
@@ -32,7 +32,3 @@
             'selected' => ($SUBNAV === 'user_type') ? 'active ' : ''
         )
     );
-    foreach($LIST_ITEMS AS $KEY=>$VALUE){
-        $LIST[] = '<li><a class="'.$VALUE['selected'].'list-group-item" href="?nav=admin&subnav='.$VALUE['subnav'].$VALUE['params'].'">'.$KEY.'</a></li>';
-    }
-    $LIST = implode('',$LIST);

@@ -15,75 +15,6 @@
         
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-        <script>
-            $(document).ready(function(){
-                $('.map_control').change(function(){
-                    switch($(this).attr('id')){
-                        case 'MAP_CLASS':
-                            $('#hidden_class').val($(this).val());
-                            break;
-                        case 'MAP_TYPE':
-                            $('#hidden_type').val($(this).val());
-                            break;
-                    }
-                });
-                $('.CONTROL_PANEL').click(function(event){
-                    switch($(this).attr('ID')){
-                        case 'view':
-                            event.preventDefault();
-                            var checked = getChecked();
-                            if(checked.length < 1){
-                                alert('Please select one row in order to view.');
-                            }
-                            else{
-                                window.location.href = $(this).attr('href')+'&id='+JSON.stringify(checked);
-                            }
-                            break;
-                        case 'edit':
-                            event.preventDefault();
-                            var checked = getChecked();
-                            if(checked.length < 1){
-                                alert('Please select one row in order to edit.');
-                            }
-                            else{
-                                window.location.href = $(this).attr('href')+'&id='+JSON.stringify(checked);
-                            }
-                            break;
-                        case 'delete':
-                            event.preventDefault();
-                            var checked = getChecked();
-                            if(checked.length < 1){
-                                alert('Please select one row in order to edit.');
-                            }
-                            else{
-                                window.location.href = 'processes/update.php?page='+<?=((isset($_GET['subnav'])) ?  "'".$_GET['subnav']."'" : 'index')?>+'&action=delete&id='+JSON.stringify(checked);
-                            }
-                            break;
-                        case 'select_all':
-                            $.each($('tr').find('.checkbox:checkbox'),function(){
-                                $(this).prop("checked",true);
-                                $(this).closest('tr').addClass('active');
-                            });
-                            break;
-                        case 'deselect_all':
-                            $.each($('tr').find('.checkbox:checkbox'),function(){
-                                $(this).prop("checked",false);
-                                $(this).closest('tr').removeClass('active');
-                            });
-                            break;
-                    }
-                });
-            });
-            function getChecked(){
-                var checked = new Array();
-
-                $.each($('tr').find('.checkbox:checked'),function(){
-                    checked.push($(this).val());
-                });
-
-                return checked;
-            }
-        </script>
     </head>
     <body>
         <div class="col-lg-12">
@@ -91,7 +22,7 @@
                 if(portal::isSignedIn()){
             ?>
             <div class="row">
-                <nav class="navbar navbar-default navbar-fixed-top">
+                <nav class="navbar navbar-default">
                     <div class="container-fluid">
                         <div class="navbar-header">
                             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -106,16 +37,41 @@
 
                         <div id="navbar" class="navbar-collapse collapse">
                             <ul class="nav navbar-nav">
-                                <li <?=isset($_GET['nav']) && $_GET['nav'] === 'inventory' ? 'class="active"' : ''?>><a href="?nav=inventory">Inventory</a></li>
+                                <li class="visible-lg<?=isset($_GET['nav']) && $_GET['nav'] === 'inventory' ? ' active' : ''?>"><a href="?nav=inventory">Inventory</a></li>
+                                <ul class="nav navbar-nav hidden-lg">
+                                    <li class="dropdown">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Inventory <span class="caret"></span></a>
+                                        <ul class="dropdown-menu">
+                                            <?php
+                                                include('models/inventory/inventory.php');
+                                                foreach($LIST AS $KEY=>$VALUE){
+                                                    echo '<li><a href="?nav=inventory&subnav='.$VALUE['subnav'].$VALUE['params'].'">'.$KEY.'</a></li>';
+                                                }
+                                            ?>
+                                        </ul>
+                                    </li>
+                                </ul>
                                 <?php
                                     if($_SESSION['USER_TYPE'] === 'ADMIN'){
                                 ?>
-                                <li <?=isset($_GET['nav']) && $_GET['nav'] === 'admin' ? 'class="active"' : ''?>><a href="?nav=admin">Admin</a></li>
+                                <li class="visible-lg<?=isset($_GET['nav']) && $_GET['nav'] === 'admin' ? ' active' : ''?>"><a href="?nav=admin">Admin</a></li>
+                                <ul class="nav navbar-nav hidden-lg">
+                                    <li class="dropdown">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span class="caret"></span></a>
+                                        <ul class="dropdown-menu">
+                                            <?php
+                                                include('models/admin/admin.php');
+                                                foreach($LIST AS $KEY=>$VALUE){
+                                                    echo '<li><a href="?nav=inventory&subnav='.$VALUE['subnav'].$VALUE['params'].'">'.$KEY.'</a></li>';
+                                                }
+                                            ?>
+                                        </ul>
+                                    </li>
+                                </ul>
                                 <?php
                                     }
                                 ?>
                             </ul>
-
                             <ul class="nav navbar-nav navbar-right">
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Currently signed in as <?=$_SESSION['USER_NAME']?> <span class="caret"></span></a>
@@ -130,7 +86,7 @@
                     </div>
                 </nav>
             </div>
-            <div class="row" style="padding-top:70px;">
+            <div class="row no-gutter">
                 <?php
                     portal::getMsg();
                     if(isset($_GET['nav'])){

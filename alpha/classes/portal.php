@@ -15,10 +15,10 @@
         }
         
         public static function navigate($NAV){
-            if(file_exists('C:\\wamp\www\main\alpha\models\\'.$NAV.'\\'.$NAV.'.php')){
+            if(file_exists('C:\\wamp\www\main\alpha\models\\'.$NAV.'\\'.$NAV.'.php') && $NAV !== 'admin' && $NAV !== 'inventory'){
                 require_once('/models/'.$NAV.'/'.$NAV.'.php');
             }
-            elseif(self::scrubString('/classes','',__DIR__.'/models/'.$NAV.'/'.$NAV.'.php')){
+            elseif(self::scrubString('/classes','',__DIR__.'/models/'.$NAV.'/'.$NAV.'.php') && $NAV !== 'admin' && $NAV !== 'inventory'){
                 require_once(self::scrubString('/classes','',__DIR__.'/models/'.$NAV.'/'.$NAV.'.php'));
             }
             if(file_exists('C:\\wamp\www\main\alpha\views\\'.$NAV.'\\'.$NAV.'.php')){
@@ -33,8 +33,8 @@
             require_once(__DIR__.'/Zebra_Database/Zebra_Database.php');
             $connection = new Zebra_Database();
             $connection->debug = true;
-            $connection->connect('localhost','spalmer','Spalm04350','alpha');
-            //$connection->connect('localhost','root','','alpha');
+            //$connection->connect('localhost','spalmer','Spalm04350','alpha');
+            $connection->connect('localhost','root','','alpha');
             $connection->set_charset();
             return $connection;
         }

@@ -1,8 +1,16 @@
 <?php
-
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
+    $SUBNAV = isset($_GET['subnav']) ? $_GET['subnav'] : NULL;
+    $LIST = array(
+        'Recently Worked' => array(
+            'subnav' => 'recently_worked',
+            'params' => '&orderBy=&order=ASC'
+        ),
+        'Submit Inventory' => array(
+            'subnav' => 'inventory_entry',
+            'params' => ''
+        ),
+        'Inventory Review' => array(
+            'subnav' => 'inventory_review',
+            'params' => '&orderBy=SKU&order=ASC'
+        )
+    );
