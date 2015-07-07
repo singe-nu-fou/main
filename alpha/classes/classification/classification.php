@@ -124,7 +124,7 @@
                 extract($DATA);
             }
             if(isset($CATEGORY_HAS_CLASSIFICATION_ID)){
-                $DB->query("SELECT characteristic.ID,CHARACTERISTIC FROM classification_has_characterisitc LEFT JOIN characteristic ON CHARACTERISTIC_ID = characteristic.ID WHERE CATEGORY_HAS_CLASSIFICATION_ID = ? ORDER BY SEQUENCE",array($CATEGORY_HAS_CLASSIFICATION_ID));
+                $DB->query("SELECT characteristic.ID,CHARACTERISTIC FROM classification_has_characteristic LEFT JOIN characteristic ON CHARACTERISTIC_ID = characteristic.ID WHERE CATEGORY_HAS_CLASSIFICATION_ID = ? ORDER BY SEQUENCE",array($CATEGORY_HAS_CLASSIFICATION_ID));
                 return $DB->fetch_assoc_all();
             }
         }
