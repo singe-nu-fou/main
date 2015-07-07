@@ -15,12 +15,18 @@
         }
         
         public static function navigate($NAV){
-            switch(true){
-                case isset($NAV):
-                case file_exists(__DIR__.'/views/'.$NAV.'/'.$NAV.'.php'):
-                case file_exists(__DIR__.'/models/'.$NAV.'/'.$NAV.'.php'):
-                    require_once(__DIR__.'/models/'.$NAV.'/'.$NAV.'.php');
-                    require_once(__DIR__.'/views/'.$NAV.'/'.$NAV.'.php');
+            clearstatcache();
+            if(file_exists('C:\\wamp\www\main\alpha\models\\'.$NAV.'\\'.$NAV.'.php')){
+                require_once('/models/'.$NAV.'/'.$NAV.'.php');
+            }
+            elseif(file_exists(__DIR__.'/models/'.$NAV.'/'.$NAV.'.php')){
+                require_once(__DIR__.'/models/'.$NAV.'/'.$NAV.'.php');
+            }
+            if(file_exists('C:\\wamp\www\main\alpha\views\\'.$NAV.'\\'.$NAV.'.php')){
+                require_once('/views/'.$NAV.'/'.$NAV.'.php');
+            }
+            elseif(file_exists(__DIR__.'/views/'.$NAV.'/'.$NAV.'.php')){
+                require_once(__DIR__.'/views/'.$NAV.'/'.$NAV.'.php');
             }
         }
         
