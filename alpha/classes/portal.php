@@ -16,8 +16,12 @@
         
         public static function navigate($NAV){
             clearstatcache();
-            var_dump(file_exists('../models/'.$NAV.'/'.$NAV.'.php'));
-            var_dump(file_exists('../views/'.$NAV.'/'.$NAV.'.php'));
+            $A = __DIR__.'/models/'.$NAV.'/'.$NAV.'.php';
+            $B = __DIR__.'/views/'.$NAV.'/'.$NAV.'.php';
+            var_dump($A);
+            var_dump($B);
+            var_dump(file_exists($A));
+            var_dump(file_exists($B));
             if(file_exists('C:\\wamp\www\main\alpha\models\\'.$NAV.'\\'.$NAV.'.php')){
                 require_once('/models/'.$NAV.'/'.$NAV.'.php');
             }
