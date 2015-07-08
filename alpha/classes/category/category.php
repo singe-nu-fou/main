@@ -176,7 +176,7 @@
             $DB = portal::database();
             $IDS = json_decode($id);
             foreach($IDS AS $ID){
-                $DB->delete("CATEGORY","ID = ?",array($ID));
+                $DB->delete("category","ID = ?",array($ID));
             }
         }
     }
