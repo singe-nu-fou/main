@@ -15,6 +15,10 @@
         
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+        <script>
+            var nav = <?=((isset($_GET['subnav'])) ?  "'".$_GET['subnav']."'" : 'index')?>;
+        </script>
+        <script src="libraries/common.js"></script>
     </head>
     <body>
         <div class="col-lg-12">
@@ -54,10 +58,10 @@
                                 <?php
                                     if($_SESSION['USER_TYPE'] === 'ADMIN'){
                                 ?>
-                                <li class="visible-lg<?=isset($_GET['nav']) && $_GET['nav'] === 'admin' ? ' active' : ''?>"><a href="?nav=admin">Admin</a></li>
+                                <li class="visible-lg<?=isset($_GET['nav']) && $_GET['nav'] === 'admin' ? ' active' : ''?>"><a href="?nav=admin">Settings</a></li>
                                 <ul class="nav navbar-nav hidden-lg">
                                     <li class="dropdown">
-                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span class="caret"></span></a>
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Settings <span class="caret"></span></a>
                                         <ul class="dropdown-menu">
                                             <?php
                                                 include('models/admin/admin.php');

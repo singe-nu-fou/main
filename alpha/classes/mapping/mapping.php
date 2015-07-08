@@ -27,80 +27,93 @@
         }
         
         public static function create(){
+            $DB = portal::database();
             $PANEL = '<div id="new" class="panel panel-default" style="margin-bottom:0px;">
                         <div class="panel-heading">New Template</div>
                         <div class="panel-body">
-                            <div class="row" style="padding-bottom:15px;">
-                                <form action="" method="post">
-                                    <input id="hidden_category" type="hidden" name="CATEGORY_ID" value="'.((isset($_POST['CATEGORY_ID'])) ? $_POST['CATEGORY_ID'] : '').'">
-                                    <input id="hidden_classification" type="hidden" name="CLASSIFICATION_ID" value="'.((isset($_POST['CLASSIFICATION_ID'])) ? $_POST['CLASSIFICATION_ID'] : '').'">
-                                    <div class="col-lg-6 col-lg-offset-3">
-                                        <div class="input-group">
-                                            <span class="input-group-addon">
-                                                # of Characteristics
-                                            </span>
-                                            <input type="text" name="CHARACTERISTIC_COUNT" value="'.((isset($_POST['CHARACTERISTIC_COUNT'])) ? $_POST['CHARACTERISTIC_COUNT'] : 0).'" class="form-control">
-                                            <span class="input-group-btn">
-                                                <button class="btn btn-default" type="submit">Update</button>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
                             <form method="POST" action="processes/update.php?page=mapping&action=insert">
-                                <div class="row" style="padding-bottom:15px;">
+                                <div id="dataRow" class="row" style="padding-bottom:15px;">
                                     <div class="col-lg-6 col-lg-offset-3">
                                         <div class="input-group">
                                             <span class="input-group-addon">
                                                 Category
                                             </span>
-                                            <select id="MAP_CLASS" name="CATEGORY_ID" class="map_control form-control">';
+                                            <select id="MAP_CLASS" name="mapping[CATEGORY_ID]" class="mapping-control form-control">
+                                                <option></option>';
             $CATEGORY = portal::warp('category','getCategory');
             foreach($CATEGORY AS $VALUE){
                 extract($VALUE);
-                $PANEL .= '<option value="'.$ID.'"'.((isset($_POST['CATEGORY_ID']) && $ID === $_POST['CATEGORY_ID']) ? ' selected' : '').'>'.$CATEGORY.'</option>';
+                $PANEL .= '<option value="'.$ID.'"'.((isset($_GET['category']) && $ID === $_GET['category']) ? ' selected' : '').'>'.$CATEGORY.'</option>';
             }
             $PANEL .= '</select>
                                         </div>
-                                    </div>
-                                    <div class="col-lg-6 col-lg-offset-3">
+                                    </div>';
+            if(isset($_GET['category'])){
+                                    $PANEL .= '<div class="col-lg-6 col-lg-offset-3">
                                         <div class="input-group">
                                             <span class="input-group-addon">
                                                 Classification
                                             </span>
-                                            <select id="MAP_TYPE" name="CLASSIFICATION_ID" class="map_control form-control">';
+                                            <select id="MAP_TYPE" name="mapping[CLASSIFICATION_ID]" class="mapping-control form-control">
+                                                <option></option>';
             $CLASSIFICATION = portal::warp('classification','getClassification');
             foreach($CLASSIFICATION AS $VALUE){
                 extract($VALUE);
-                $PANEL .= '<option value="'.$ID.'"'.((isset($_POST['CLASSIFICATION_ID']) && $ID === $_POST['CLASSIFICATION_ID']) ? ' selected' : '').'>'.$CLASSIFICATION.'</option>';
+                $PANEL .= '<option value="'.$ID.'"'.((isset($_GET['classification']) && $ID === $_GET['classification']) ? ' selected' : '').'>'.$CLASSIFICATION.'</option>';
             }
-            $PANEL .= '</select>
-                                        </div>
-                                    </div>';
-            if(isset($_POST['CHARACTERISTIC_COUNT']) && is_int(intval($_POST['CHARACTERISTIC_COUNT']))){
-                for($i = 0; $i !== intval($_POST['CHARACTERISTIC_COUNT']);$i++){
-                    $PANEL .= '<div class="col-lg-6 col-lg-offset-3">
+            $PANEL .= '                     </select>
+                                        </div>';
+            }
+            $PANEL .= '             </div>';
+
+            if(isset($_GET['category']) && isset($_GET['classification'])){
+                $DEFAULT_CHARACTERISTICS = portal::warp('characteristic','getCharacteristic');
+                $DB->query('SELECT
+                            CONCAT(\'{\',GROUP_CONCAT(CONCAT(\'"\',characteristic.ID,\'"\',\':"\',characteristic.CHARACTERISTIC,\'"\')),\'}\') AS CHARACTERISTICS
+                            FROM category_has_classification 
+                            JOIN classification_has_characteristic ON category_has_classification.ID = CATEGORY_HAS_CLASSIFICATION_ID
+                            JOIN category ON CATEGORY_ID = category.ID
+                            JOIN classification ON CLASSIFICATION_ID = classification.ID
+                            JOIN characteristic ON CHARACTERISTIC_ID = characteristic.ID
+                            WHERE category.ID = ? AND classification.ID = ?',array($_GET['category'],$_GET['classification']));
+                $RESULT = $DB->FETCH_ASSOC();
+                if($RESULT['CHARACTERISTICS']){
+                    $CHARACTERISTICS = json_decode($RESULT['CHARACTERISTICS']);
+                    foreach($CHARACTERISTICS AS $KEY=>$VALUE){
+                        $PANEL .= ' <div class="col-lg-6 col-lg-offset-3">
                                         <div class="input-group">
                                             <span class="input-group-addon">
                                                 Characteristic
                                             </span>
-                                            <select name="CHARACTERISTIC_ID['.$i.']" class="characteristic_control form-control">';
-            $CHARACTERISTICS = portal::warp('characteristic','getCharacteristic');
-            foreach($CHARACTERISTICS AS $VALUE){
-                extract($VALUE);
-                $PANEL .= '<option value="'.$ID.'">'.$CHARACTERISTIC.'</option>';
-            }
-            $PANEL .= '</select>
+                                            <select class="form-control" name="mapping[CHARACTERISTIC_ID][]">
+                                                <option></option>';
+                        foreach($DEFAULT_CHARACTERISTICS AS $CHARACTERISTIC){
+                            extract($CHARACTERISTIC);
+                            $PANEL .= '         <option value="'.$ID.'"'.(($ID === $KEY) ? ' selected' : '').'>'.$CHARACTERISTIC.'</option>';
+                        }
+                        $PANEL .= '         </select>
+                                            <span class="input-group-btn">
+                                                <button type="button" class="removeCharacteristic btn btn-default">
+                                                    <span class="glyphicon glyphicon-remove"></span>
+                                                </button>
+                                            </span>
                                         </div>
                                     </div>';
+                    }
                 }
+
             }
-                                $PANEL .= '</div>
-                                <div class="row">
-                                    <div class="col-lg-3 col-lg-offset-3">
+            $PANEL .= '     </div>
+                                <div class="row">';
+            if(isset($_GET['category']) && isset($_GET['classification'])){
+                $PANEL .= '         <div class="col-lg-2 col-lg-offset-3">
                                         <button type="submit" class="btn btn-default form-control">Create Template</button>
                                     </div>
-                                    <div class="col-lg-3">
+                                    <div class="col-lg-2">
+                                         <button id="addCharacteristic" type="button" class="btn btn-default form-control">Add Characteristic</button>
+                                    </div>';
+            }
+            $PANEL .= '             <div class="'.((isset($_GET['category']) && isset($_GET['classification'])) ? 'col-lg-2' : 'col-lg-2 col-lg-offset-3').'">
                                         <button name="cancel" type="submit" class="btn btn-default form-control">Cancel</button>
                                     </div>
                                 </div>
@@ -119,18 +132,18 @@
                             <form method="POST" action="processes/update.php?page=templates&action=update">';
             $IDS = json_decode($id);
             foreach($IDS AS $ID){
-                $DB->query('SELECT 
+                $DB->query('SELECT
                             category_has_classification.ID,
                             category.ID,
                             category.CATEGORY,
                             classification.ID,
                             classification.CLASSIFICATION,
-                            CONCAT(\'{\',GROUP_CONCAT(CONCAT(\'"\',characteristics.ID,\'"\',\':"\',characteristics.CHARACTERISTIC_NAME,\'"\')),\'}\') AS CHARACTERISTICS
+                            CONCAT(\'{\',GROUP_CONCAT(CONCAT(\'"\',characteristic.ID,\'"\',\':"\',characteristic.CHARACTERISTIC,\'"\')),\'}\') AS CHARACTERISTICS
                             FROM category_has_classification 
-                            JOIN classification_has_characteristics AS THA ON CATEGORY_HAS_CLASSIFICATION.ID = THA.CATEGORY_HAS_CLASSIFICATION_ID 
-                            JOIN category ON category_has_classification.CATEGORY_ID = category.ID 
-                            JOIN classification ON category_has_classification.CLASSIFICATION_ID = classification.ID 
-                            JOIN characteristics ON THA.CHARACTERISTIC_ID = characteristics.ID
+                            JOIN classification_has_characteristic ON category_has_classification.ID = CATEGORY_HAS_CLASSIFICATION_ID
+                            JOIN category ON CATEGORY_ID = category.ID
+                            JOIN classification ON CLASSIFICATION_ID = classification.ID
+                            JOIN characteristic ON CHARACTERISTIC_ID = characteristic.ID
                             WHERE category_has_classification.ID = ?',array($ID));
                 $RESULTS = $DB->fetch_assoc_all();
                 foreach($RESULTS AS $KEY=>$VALUE){
@@ -169,7 +182,6 @@
                 }
                 $PANEL .= "</div>";
             }
-            
             $PANEL .= '     <div class="row">
                                 <div class="col-lg-6 col-lg-offset-3">
                                     <button name="cancel" type="submit" class="btn btn-default form-control">Close View</button>
@@ -182,8 +194,14 @@
         }
         
         public static function insert($DATA){
+            foreach($DATA['POST']['mapping']['CHARACTERISTIC_ID'] AS $KEY=>$VALUE){
+                if(strlen(trim($VALUE)) === 0){
+                    $_SESSION['ERROR_MSG'] = 'Bad value in characterisitcs.';
+                    return;
+                }
+            }
             $DB = portal::database();
-            extract($DATA['POST']);
+            extract($DATA['POST']['mapping']);
             $DB->select("*","category_has_classification","CATEGORY_ID = ? AND CLASSIFICATION_ID = ?",array($CATEGORY_ID,$CLASSIFICATION_ID));
             if($EXISTS = $DB->fetch_assoc()){
                 $DB->delete("category_has_classification","ID = ?",array($EXISTS['ID']));
@@ -205,5 +223,32 @@
                 $DB->delete("category_has_classification","ID = ?",array($ID));
                 $DB->delete("classification_has_characteristic","CATEGORY_HAS_CLASSIFICATION_ID = ?",array($ID));
             }
+        }
+        
+        public static function selectCharacteristic($ECHO = TRUE){
+            $DEFAULT_CHARACTERISTICS = portal::warp('characteristic','getCharacteristic');
+            $SELECT = ' <div class="col-lg-6 col-lg-offset-3">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    Characteristic
+                                </span>
+                                <select class="form-control" name="mapping[CHARACTERISTIC_ID][]">
+                                    <option></option>';
+            foreach($DEFAULT_CHARACTERISTICS AS $CHARACTERISTIC){
+                extract($CHARACTERISTIC);
+                $SELECT .= '        <option value="'.$ID.'">'.$CHARACTERISTIC.'</option>';
+            }
+            $SELECT .= '        </select>
+                                <span class="input-group-btn">
+                                    <button type="button" class="removeCharacteristic btn btn-default">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>';
+            if(!$ECHO){
+                return $SELECT;
+            }
+            echo $SELECT;
         }
     }

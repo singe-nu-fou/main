@@ -168,6 +168,7 @@
             $IDS = json_decode($id);
             foreach($IDS AS $ID){
                 $DB->delete("characteristic","ID = ?",array($ID));
+                $DB->delete("classification_has_characteristic","CHARACTERISTIC_ID = ?",array($ID));
             }
         }
     }
