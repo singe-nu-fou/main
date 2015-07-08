@@ -94,9 +94,9 @@
             extract($_GET);
             $IDS = json_decode($id);
             foreach($IDS AS $ID){
-                $SQL_CONCAT[] = " USER_ACCOUNT.ID = ? ";
+                $SQL_CONCAT[] = " user_account.ID = ? ";
             }
-            $DB->query("SELECT user_acccount.ID AS 'USER_ACCOUNT_ID',
+            $DB->query("SELECT user_account.ID AS 'USER_ACCOUNT_ID',
                                USER_NAME_ID,
                                USER_NAME,
                                USER_TYPE_ID,
@@ -136,8 +136,7 @@
                                            Type
                                        </span>
                                        <select name="USERS['.$USER_ACCOUNT_ID.'][USER_TYPE_ID]" class="form-control">';
-                                
-                $USER_TYPES = userType::getUserType();
+                $USER_TYPES = portal::warp('user_type','getUserType');
                 foreach($USER_TYPES AS $VALUE){
                     extract($VALUE);
                     $PANEL .= '<option value="'.$ID.'"'.(($ID === $USER_TYPE_ID) ? ' selected' : '').'>'.$USER_TYPE.'</option>';

@@ -48,7 +48,7 @@
             }
             else{
                 $_SESSION['ERROR_MSG'] = 'Incorrect username or password.';
-                    self::signOut();
+                self::redirect('../');
             }
             $DB = self::database();
             if(self::warp('user','userNameExists',array('USER_NAME'=>$USER_NAME)) && self::warp('user','validUsername',$USER_NAME) && self::warp('user','validPassword',$USER_PASSWORD)){
@@ -60,7 +60,7 @@
                 $RESULT = $DB->fetch_obj();
                 if(MD5($DATA['POST']['USER_PASSWORD']) !== $RESULT->USER_PASSWORD){
                     $_SESSION['ERROR_MSG'] = 'Incorrect username or password.';
-                    self::signOut();
+                    self::redirect('../');
                 }
                 foreach($RESULT AS $KEY=>$VALUE){
                     if($KEY !== 'USER_PASSWORD'){
@@ -70,7 +70,10 @@
                 $DB->query("UPDATE user_account LEFT JOIN user_name ON USER_NAME_ID = user_name.ID SET LAST_LOGIN = NOW()+0 WHERE USER_NAME = ?",array($_SESSION['USER_NAME']));
                 unset($_SESSION['ERROR_MSG']);
                 self::redirect('../?nav=inventory');
+                return;
             }
+            $_SESSION['ERROR_MSG'] = 'Incorrect username or password.';
+            self::redirect('../');
         }
         
         public static function signOut(){

@@ -183,6 +183,12 @@
             $IDS = json_decode($id);
             foreach($IDS AS $ID){
                 $DB->delete("classification","ID = ?",array($ID));
+                $DB->select("ID","category_has_classification","CLASSIFICATION_ID = ?",array($ID));
+                $CHC_IDS = $DB->fetch_assoc_all();
+                $DB->delete("category_has_classification","CLASSIFICATION_ID = ?",array($ID));
+                foreach($CHC_IDS AS $KEY=>$VALUE){
+                    $DB->delete("classification_has_characteristic","CATEGORY_HAS_CLASSIFICATION_ID = ?",array($VALUE['ID']));
+                }
             }
         }
     }
