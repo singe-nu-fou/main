@@ -1,0 +1,27 @@
+*{
+    border-radius:0px;
+}
+.list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover {
+    background-image: linear-gradient(to bottom, #DBDBDB 0px, #E2E2E2 100%);
+    background-repeat: repeat-x;
+    box-shadow: 0 3px 9px rgba(0, 0, 0, 0.075) inset;
+    color: #555555;
+    font-weight:normal;
+    text-shadow:0 0 0;
+}
+.list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover{
+    border-color:#555555;
+}
+.navbar{
+    margin-bottom:0px;
+}
+.no-gutter > div[class*="col-"]{
+    padding-left:0px;
+    padding-right:0px;
+    height:94.5vh;
+    overflow-y:auto;
+}
+#sidebar{
+    border-right: 3px double #E7E7E7;
+    background-color:#E7E7E7;
+}
