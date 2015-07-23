@@ -47,10 +47,10 @@
                                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Home <span class="caret"></span></a>
                                         <ul class="dropdown-menu">
                                             <?php
-                                                //include('models/main/main.php');
-                                                //foreach($LIST AS $KEY=>$VALUE){
-                                                //    echo '<li><a href="?nav=main&subnav='.$VALUE['subnav'].$VALUE['params'].'">'.$KEY.'</a></li>';
-                                                //}
+                                                include('models/main/main.php');
+                                                foreach($LIST AS $KEY=>$VALUE){
+                                                    echo '<li><a href="?nav=main&subnav='.$VALUE['subnav'].$VALUE['params'].'">'.$KEY.'</a></li>';
+                                                }
                                             ?>
                                         </ul>
                                     </li>
@@ -66,7 +66,7 @@
                                             <?php
                                                 include('models/admin/admin.php');
                                                 foreach($LIST AS $KEY=>$VALUE){
-                                                    echo '<li><a href="?nav=main&subnav='.$VALUE['subnav'].$VALUE['params'].'">'.$KEY.'</a></li>';
+                                                    echo '<li><a href="?nav=admin&subnav='.$VALUE['subnav'].$VALUE['params'].'">'.$KEY.'</a></li>';
                                                 }
                                             ?>
                                         </ul>
