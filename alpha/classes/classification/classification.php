@@ -157,7 +157,7 @@
         public static function insert($DATA){
             extract($DATA['POST']);
             if(self::isRealClassification(array('NAME'=>$CLASSIFICATION))){
-                $_SESSION['ERROR_MSG'] = 'Classifications cannot be the same as an existing type.';
+                $_SESSION[CLIENT]['ERROR_MSG'] = 'Classifications cannot be the same as an existing type.';
                 return;
             }
             $DB = portal::database();
@@ -168,7 +168,7 @@
             extract($DATA['POST']);
             foreach($CLASSIFICATION AS $ID=>$CLASSIFICATION){
                 if(self::isRealClassification(array('NAME'=>$CLASSIFICATION['CLASSIFICATION']))){
-                    $_SESSION['ERROR_MSG'] = 'Classifications cannot be the same as an existing type.';
+                    $_SESSION[CLIENT]['ERROR_MSG'] = 'Classifications cannot be the same as an existing type.';
                 }
                 else{
                     $DB = portal::database();

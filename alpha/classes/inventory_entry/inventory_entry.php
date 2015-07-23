@@ -20,13 +20,13 @@
             }
             $DB->select("ID AS INVENTORY_ID","inventory","SKU = ?",array($INVENTORY['SKU']));
             if($DB->fetch_assoc()){
-                $_SESSION['ERROR_MSG'] = 'Duplicate SKU, please resubmit with a valid SKU.';
+                $_SESSION[CLIENT]['ERROR_MSG'] = 'Duplicate SKU, please resubmit with a valid SKU.';
                 return;
             }
             $DB->insert("inventory",array("SKU"=>$INVENTORY['SKU'],"CATEGORY_ID"=>$INVENTORY['CATEGORY_ID'],"CLASSIFICATION_ID"=>$INVENTORY['CLASSIFICATION_ID'],"WEIGHT"=>$INVENTORY['WEIGHT']));
             $DB->select("ID AS INVENTORY_ID","inventory","SKU = ?",array($INVENTORY['SKU']));
             extract($DB->fetch_assoc());
             $DB->insert("inventory_characteristic",array("INVENTORY_ID"=>$INVENTORY_ID,"CHARACTERISTICS"=>json_encode($CHARACTERISTIC)));
-            $DB->insert("inventory_worked_by",array("INVENTORY_ID"=>$INVENTORY_ID,"USER_ACCOUNT_ID"=>$_SESSION['ID']));
+            $DB->insert("inventory_worked_by",array("INVENTORY_ID"=>$INVENTORY_ID,"USER_ACCOUNT_ID"=>$_SESSION[CLIENT]['ID']));
         }
     }

@@ -1,5 +1,6 @@
 <?php
     date_default_timezone_set('America/Chicago');
+    define('CLIENT','NEBULA');
 
     class portal{
         public static function warp($ZONE,$ACTION,$DATA = NULL){
@@ -47,7 +48,7 @@
                 extract($DATA['POST']);
             }
             else{
-                $_SESSION['ERROR_MSG'] = 'Incorrect username or password.';
+                $_SESSION[CLIENT]['ERROR_MSG'] = 'Incorrect username or password.';
                 self::redirect('../');
             }
             $DB = self::database();
@@ -59,32 +60,32 @@
                             WHERE USER_NAME = ?",array($DATA['POST']['USER_NAME']));
                 $RESULT = $DB->fetch_obj();
                 if(MD5($DATA['POST']['USER_PASSWORD']) !== $RESULT->USER_PASSWORD){
-                    $_SESSION['ERROR_MSG'] = 'Incorrect username or password.';
+                    $_SESSION[CLIENT]['ERROR_MSG'] = 'Incorrect username or password.';
                     self::redirect('../');
                 }
                 foreach($RESULT AS $KEY=>$VALUE){
                     if($KEY !== 'USER_PASSWORD'){
-                        $_SESSION[$KEY] = $VALUE;
+                        $_SESSION[CLIENT][$KEY] = $VALUE;
                     }
                 }
-                $DB->query("UPDATE user_account LEFT JOIN user_name ON USER_NAME_ID = user_name.ID SET LAST_LOGIN = NOW()+0 WHERE USER_NAME = ?",array($_SESSION['USER_NAME']));
-                unset($_SESSION['ERROR_MSG']);
+                $DB->query("UPDATE user_account LEFT JOIN user_name ON USER_NAME_ID = user_name.ID SET LAST_LOGIN = NOW()+0 WHERE USER_NAME = ?",array($_SESSION[CLIENT]['USER_NAME']));
+                unset($_SESSION[CLIENT]['ERROR_MSG']);
                 self::redirect('../?nav=main');
                 return;
             }
-            $_SESSION['ERROR_MSG'] = 'Incorrect username or password.';
+            $_SESSION[CLIENT]['ERROR_MSG'] = 'Incorrect username or password.';
             self::redirect('../');
         }
         
         public static function signOut(){
             session_destroy();
             session_start();
-            $_SESSION['ERROR_MSG'] = "Signed out successfully.";
+            $_SESSION[CLIENT]['ERROR_MSG'] = "Signed out successfully.";
             self::redirect('../');
         }
         
         public static function isSignedIn(){
-            if(isset($_SESSION['USER_NAME']) && self::warp('user','userNameExists',array('USER_NAME'=>$_SESSION['USER_NAME']))){
+            if(isset($_SESSION[CLIENT]['USER_NAME']) && self::warp('user','userNameExists',array('USER_NAME'=>$_SESSION[CLIENT]['USER_NAME']))){
                 return true;
             }
             return false;
@@ -103,13 +104,13 @@
         }
         
         public static function getMsg(){
-            if(isset($_SESSION['ERROR_MSG'])){
-                echo '<div class="alert alert-danger">'.$_SESSION['ERROR_MSG'].'</div>';
-                unset($_SESSION['ERROR_MSG']);
+            if(isset($_SESSION[CLIENT]['ERROR_MSG'])){
+                echo '<div class="alert alert-danger">'.$_SESSION[CLIENT]['ERROR_MSG'].'</div>';
+                unset($_SESSION[CLIENT]['ERROR_MSG']);
             }
-            if(isset($_SESSION['MSG'])){
-                echo '<div class="alert alert-success">'.$_SESSION['MSG'].'</div>';
-                unset($_SESSION['MSG']);
+            if(isset($_SESSION[CLIENT]['MSG'])){
+                echo '<div class="alert alert-success">'.$_SESSION[CLIENT]['MSG'].'</div>';
+                unset($_SESSION[CLIENT]['MSG']);
             }
         }
         

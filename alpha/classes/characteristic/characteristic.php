@@ -142,7 +142,7 @@
         public static function insert($DATA){
             extract($DATA['POST']);
             if(self::isRealCharacteristic(array('NAME'=>$CHARACTERISTIC))){
-                $_SESSION['ERROR_MSG'] = 'Characteristics cannot be the same as an existing characteristic.';
+                $_SESSION[CLIENT]['ERROR_MSG'] = 'Characteristics cannot be the same as an existing characteristic.';
                 return;
             }
             $DB = portal::database();
@@ -153,7 +153,7 @@
             extract($DATA['POST']);
             foreach($CHARACTERISTIC AS $ID=>$CHARACTERISTIC){
                 if(self::isRealCharacteristic(array('NAME'=>$CHARACTERISTIC['CHARACTERISTIC']))){
-                    $_SESSION['ERROR_MSG'] = 'Characteristics cannot be the same as an existing characteristic.';
+                    $_SESSION[CLIENT]['ERROR_MSG'] = 'Characteristics cannot be the same as an existing characteristic.';
                 }
                 else{
                     $DB = portal::database();

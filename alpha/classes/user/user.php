@@ -280,7 +280,7 @@
                         break;
                 }
                 if(count($ERROR_MSG) > 0){
-                    $_SESSION['ERROR_MSG'] = 'Failed to update the following users: '.implode(', ',$ERROR_MSG).implode('',$ERR_REASON);
+                    $_SESSION[CLIENT]['ERROR_MSG'] = 'Failed to update the following users: '.implode(', ',$ERROR_MSG).implode('',$ERR_REASON);
                 }
             }
         }
@@ -303,14 +303,14 @@
             if(isset($ID)){
                 $DB->select("USER_NAME","user_name","ID = ?",array($ID));
                 if($DB->fetch_assoc()){
-                    //$_SESSION['ERROR_MSG'] = "Invalid username: This username already exists.";
+                    //$_SESSION[CLIENT]['ERROR_MSG'] = "Invalid username: This username already exists.";
                     return true;
                 }
             }
             elseif(isset($USER_NAME)){
                 $DB->select("USER_NAME","user_name","USER_NAME = ?",array($USER_NAME));
                 if($DB->fetch_assoc()){
-                    //$_SESSION['ERROR_MSG'] = "Invalid username: This username already exists.";
+                    //$_SESSION[CLIENT]['ERROR_MSG'] = "Invalid username: This username already exists.";
                     return true;
                 }
             }
@@ -323,14 +323,14 @@
             if(isset($ID)){
                 $DB->select("USER_EMAIL","user_email","ID = ?",array($ID));
                 if($DB->fetch_assoc()){
-                    $_SESSION['ERROR_MSG'] = "Invalid email address: This email address is already tied to another account.";
+                    $_SESSION[CLIENT]['ERROR_MSG'] = "Invalid email address: This email address is already tied to another account.";
                     return true;
                 }
             }
             elseif(isset($USER_EMAIL)){
                 $DB->select("USER_EMAIL","USER_EMAIL","USER_EMAIL = ?",array($USER_EMAIL));
                 if($DB->fetch_assoc()){
-                    $_SESSION['ERROR_MSG'] = "Invalid email address: This email address is already tied to another account.";
+                    $_SESSION[CLIENT]['ERROR_MSG'] = "Invalid email address: This email address is already tied to another account.";
                     return true;
                 }
             }
@@ -338,29 +338,29 @@
         }
         
         public static function validUsername($USER_NAME){
-            $_SESSION['ERROR_MSG'] = 'Invalid username: ';
+            $_SESSION[CLIENT]['ERROR_MSG'] = 'Invalid username: ';
             switch(true){
                 case preg_match('/[\'^£$%&*()}{@#~?><>,.|=+¬-]/', $USER_NAME):
                 case strlen(trim($USER_NAME)) === 0:
                 case strlen(trim($USER_NAME)) < 6:
                 case count(explode(' ',$USER_NAME)) !== 1:
-                    $_SESSION['ERROR_MSG'] .= "Username must be at least six characters long, cannot contain special character or underscores, and cannot contain spaces.";
+                    $_SESSION[CLIENT]['ERROR_MSG'] .= "Username must be at least six characters long, cannot contain special character or underscores, and cannot contain spaces.";
                     return false;
             }
-            unset($_SESSION['ERROR_MSG']);
+            unset($_SESSION[CLIENT]['ERROR_MSG']);
             return true;
         }
         
         public static function validPassword($USER_PASS){
-            $_SESSION['ERROR_MSG'] = "Invalid password: ";
+            $_SESSION[CLIENT]['ERROR_MSG'] = "Invalid password: ";
             switch(true){
                 case strlen(trim($USER_PASS)) === 0:
                 case strlen(trim($USER_PASS)) < 6:
                 case count(explode(' ',$USER_PASS)) !== 1:
-                    $_SESSION['ERROR_MSG'] .= 'Passwords must be at least six characters long and contain no spaces!';
+                    $_SESSION[CLIENT]['ERROR_MSG'] .= 'Passwords must be at least six characters long and contain no spaces!';
                     return false;
             }
-            unset($_SESSION['ERROR_MSG']);
+            unset($_SESSION[CLIENT]['ERROR_MSG']);
             return true;
         }
         

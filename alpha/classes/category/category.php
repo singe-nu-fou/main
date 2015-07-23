@@ -151,7 +151,7 @@
         public static function insert($DATA){
             extract($DATA['POST']);
             if(self::isRealCategory(array('NAME'=>$CATEGORY))){
-                $_SESSION['ERROR_MSG'] = 'Categorys cannot be the same as an existing category.';
+                $_SESSION[CLIENT]['ERROR_MSG'] = 'Categorys cannot be the same as an existing category.';
                 return;
             }
             $DB = portal::database();
@@ -162,7 +162,7 @@
             extract($DATA['POST']);
             foreach($CATEGORY AS $ID=>$CATEGORY){
                 if(self::isRealCategory(array('NAME'=>$CATEGORY['CATEGORY']))){
-                    $_SESSION['ERROR_MSG'] = 'Categorys cannot be the same as an existing category.';
+                    $_SESSION[CLIENT]['ERROR_MSG'] = 'Categorys cannot be the same as an existing category.';
                 }
                 else{
                     $DB = portal::database();

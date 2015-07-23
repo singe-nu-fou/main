@@ -196,7 +196,7 @@
         public static function insert($DATA){
             foreach($DATA['POST']['mapping']['CHARACTERISTIC_ID'] AS $KEY=>$VALUE){
                 if(strlen(trim($VALUE)) === 0){
-                    $_SESSION['ERROR_MSG'] = 'Bad value in characterisitcs.';
+                    $_SESSION[CLIENT]['ERROR_MSG'] = 'Bad value in characterisitcs.';
                     return;
                 }
             }

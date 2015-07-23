@@ -142,7 +142,7 @@
         public static function insert($DATA){
             extract($DATA['POST']);
             if(self::isRealUserType(array('NAME'=>$USER_TYPE)) || preg_match('/[\'^£$%&*()}{@#~?><>,.|=+¬-]/',$USER_TYPE)){
-                $_SESSION['ERROR_MSG'] = 'User types cannot contain special characters, and cannot be the same as an existing type.';
+                $_SESSION[CLIENT]['ERROR_MSG'] = 'User types cannot contain special characters, and cannot be the same as an existing type.';
                 return;
             }
             $DB = portal::database();
@@ -153,7 +153,7 @@
             extract($DATA['POST']);
             foreach($TYPES AS $ID=>$TYPE){
                 if(self::isRealUserType(array('NAME'=>$TYPE['USER_TYPE'])) || preg_match('/[\'^£$%&*()}{@#~?><>,.|=+¬-]/',$TYPE['USER_TYPE'])){
-                    $_SESSION['ERROR_MSG'] = 'User types cannot contain special characters, and cannot be the same as an existing type.';
+                    $_SESSION[CLIENT]['ERROR_MSG'] = 'User types cannot contain special characters, and cannot be the same as an existing type.';
                 }
                 else{
                     $DB = portal::database();

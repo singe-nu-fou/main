@@ -16,7 +16,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
         <script>
-            var nav = <?=((isset($_GET['subnav'])) ?  "'".$_GET['subnav']."'" : 'index')?>;
+            var nav = <?=((isset($_GET['subnav'])) ?  "'".$_GET['subnav']."'" : "'index'")?>;
         </script>
         <script src="libraries/common.js"></script>
     </head>
@@ -56,7 +56,7 @@
                                     </li>
                                 </ul>
                                 <?php
-                                    if($_SESSION['USER_TYPE'] === 'ADMIN'){
+                                    if($_SESSION[CLIENT]['USER_TYPE'] === 'ADMIN'){
                                 ?>
                                 <li class="visible-lg<?=isset($_GET['nav']) && $_GET['nav'] === 'admin' ? ' active' : ''?>"><a href="?nav=admin">Settings</a></li>
                                 <ul class="nav navbar-nav hidden-lg">
@@ -78,7 +78,7 @@
                             </ul>
                             <ul class="nav navbar-nav navbar-right">
                                 <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Currently signed in as <?=$_SESSION['USER_NAME']?> <span class="caret"></span></a>
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Currently signed in as <?=$_SESSION[CLIENT]['USER_NAME']?> <span class="caret"></span></a>
                                     <ul class="dropdown-menu">
                                         <li><a href="#">User Profile</a></li>
                                         <li role="separator" class="divider"></li>
