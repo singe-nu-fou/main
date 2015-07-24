@@ -161,7 +161,16 @@
                     </button>';
         }
         
-        public static function delete(){
-            
+        public static function delete($DATA){
+            extract($DATA['GET']);
+            $DB = portal::database();
+            $IDS = json_decode($id);
+            foreach($IDS AS $ID){
+                $DB->delete("inventory","ID = ?",array($ID));
+                $DB->delete("inventory_worked_by","INVENTORY_ID = ?",array($ID));
+                $DB->delete("inventory_characteristic","INVENTORY_ID = ?",array($ID));
+                $DB->delete("inventory_status","INVENTORY_ID = ?",array($ID));
+                $DB->delete("inventory_title","INVENTORY_ID = ?",array($ID));
+            }
         }
     }
