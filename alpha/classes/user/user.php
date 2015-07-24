@@ -328,6 +328,7 @@
                 extract($DB->fetch_assoc());
                 $DB->delete("user_name","ID = ?",array($USER_NAME_ID));
                 $DB->delete("user_account","ID = ?",array($ID));
+                $DB->delete("user_email","ID = ?",array($USER_EMAIL_ID));
             }
         }
         
