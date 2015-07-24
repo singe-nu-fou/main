@@ -367,7 +367,7 @@
                 }
             }
             elseif(isset($USER_EMAIL)){
-                $DB->select("USER_EMAIL","USER_EMAIL","USER_EMAIL = ?",array($USER_EMAIL));
+                $DB->select("USER_EMAIL","user_email","USER_EMAIL = ?",array($USER_EMAIL));
                 if($DB->fetch_assoc()){
                     return true;
                 }
