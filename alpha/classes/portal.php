@@ -1,8 +1,30 @@
 <?php
+    /* =======================================================================
+     * (C) 2015 Stephen Palmer
+     * All Rights Reserved
+     * File: portal.php
+     * Description: Portal master class file. Library of commonly used functions
+     *              as well as functions built to access class, model, and view
+     *              files within the scope of the app using Portal.
+     * Author: Stephen Palmer <stephen.palmerjr@outlook.com>
+     * PHP Version: 5.4
+     * ======================================================================= */
+
+    //sets timezone to central standard
     date_default_timezone_set('America/Chicago');
+    
+    /*
+     * Define the constant CLIENT for encapsulating session data, and allows for 
+     * hosting multiple apps using this framework on the same server.
+     */
     define('CLIENT','ALPHA');
 
     class portal{
+        /*
+         * Core function of the portal class file. Accepts pointer information 
+         * to dynamically call any class function from anywhere in the scope of 
+         * portal.
+         */
         public static function warp($ZONE,$ACTION,$DATA = NULL){
             $DATA = ($DATA === NULL) ? array(
                 'POST' => $_POST,
@@ -15,6 +37,11 @@
             return self::$ACTION($DATA);
         }
         
+        /*
+         * Autoloader function for basic navigation in the app. Built for both 
+         * local and server use. Determines the existence of model and view 
+         * files and loads them accordingly.
+         */
         public static function navigate($NAV){
             if(file_exists('C:\\wamp\www\main\alpha\models\\'.$NAV.'\\'.$NAV.'.php') && $NAV !== 'admin' && $NAV !== 'inventory'){
                 require_once('/models/'.$NAV.'/'.$NAV.'.php');
@@ -30,6 +57,10 @@
             }
         }
         
+        /*
+         * Basic database connection function. Set up so that anywhere in the
+         * scope of portal can call this to open a connection to the database.
+         */
         public static function database(){
             require_once(__DIR__.'/Zebra_Database/Zebra_Database.php');
             $connection = new Zebra_Database();
@@ -40,6 +71,11 @@
             return $connection;
         }
         
+        /*
+         * Basic handler for authenticating users. Ties into portal's warp
+         * function to access the user class to validate entered user info
+         * and uses portal's redirect to navigate the user after validation.
+         */
         public static function signIn($DATA){
             if(self::isSignedIn()){
                 self::redirect('../?nav=inventory');
@@ -57,9 +93,9 @@
                             FROM user_account 
                             LEFT JOIN user_type ON USER_TYPE_ID = user_type.ID 
                             LEFT JOIN user_name ON USER_NAME_ID = user_name.ID 
-                            WHERE USER_NAME = ?",array($DATA['POST']['USER_NAME']));
+                            WHERE USER_NAME = ?",array($USER_NAME));
                 $RESULT = $DB->fetch_obj();
-                if(MD5($DATA['POST']['USER_PASSWORD']) !== $RESULT->USER_PASSWORD){
+                if(MD5($USER_PASSWORD) !== $RESULT->USER_PASSWORD){
                     $_SESSION[CLIENT]['ERROR_MSG'] = 'Incorrect username or password.';
                     self::redirect('../');
                 }
@@ -77,6 +113,10 @@
             self::redirect('../');
         }
         
+        /*
+         * Basic session destruction and appends a message to ERROR_MSG to be
+         * displayed identifying you have signed out.
+         */
         public static function signOut(){
             session_destroy();
             session_start();
@@ -84,6 +124,10 @@
             self::redirect('../');
         }
         
+        /*
+         * Bool function to determine if use is currently signed in, and said
+         * user actually exists.
+         */
         public static function isSignedIn(){
             if(isset($_SESSION[CLIENT]['USER_NAME']) && self::warp('user','userNameExists',array('USER_NAME'=>$_SESSION[CLIENT]['USER_NAME']))){
                 return true;
@@ -91,6 +135,11 @@
             return false;
         }
         
+        /*
+         * Personal use substr function that allows me to either do a basic
+         * substr, or a substr of multiple values at the same time by passing
+         * an array.
+         */
         public static function scrubString($NEEDLE,$REPLACE,$HAYSTACK){
             if(is_array($NEEDLE)){
                 $NEEDLES = $NEEDLE;
@@ -103,6 +152,11 @@
             return str_replace($NEEDLE,$REPLACE,$HAYSTACK);
         }
         
+        /*
+         * Core function used to display session ERROR_MSG or MSG session
+         * variables. Currently only used for ERROR_MSG, but is still ready to
+         * display regular MSG.
+         */
         public static function getMsg(){
             if(isset($_SESSION[CLIENT]['ERROR_MSG'])){
                 echo '<div class="alert alert-danger">'.$_SESSION[CLIENT]['ERROR_MSG'].'</div>';
@@ -114,6 +168,10 @@
             }
         }
         
+        /*
+         * Simple redirect function that modifies the header information based
+         * on passed information, default navigates to index.
+         */
         public static function redirect($location = '../'){
             header('Location: '.$location);
         }

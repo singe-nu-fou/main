@@ -16,6 +16,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
         <script>
+            //set the current location of the app based on get data
             var nav = <?=((isset($_GET['subnav'])) ?  "'".$_GET['subnav']."'" : "'index'")?>;
         </script>
         <script src="libraries/common.js"></script>
@@ -23,6 +24,7 @@
     <body>
         <div class="col-lg-12">
             <?php
+                //quick currently signed in check to determine what basic content to show
                 if(portal::isSignedIn()){
             ?>
             <div class="row">
@@ -47,6 +49,8 @@
                                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Inventory <span class="caret"></span></a>
                                         <ul class="dropdown-menu">
                                             <?php
+                                                //temporary solution to generating the dropdown options in responsive views
+                                                //these only show in tablet/mobile views
                                                 include('models/inventory/inventory.php');
                                                 foreach($LIST AS $KEY=>$VALUE){
                                                     echo '<li><a href="?nav=inventory&subnav='.$VALUE['subnav'].$VALUE['params'].'">'.$KEY.'</a></li>';
@@ -56,6 +60,7 @@
                                     </li>
                                 </ul>
                                 <?php
+                                    //user type check to show admin content
                                     if($_SESSION[CLIENT]['USER_TYPE'] === 'ADMIN'){
                                 ?>
                                 <li class="visible-lg<?=isset($_GET['nav']) && $_GET['nav'] === 'admin' ? ' active' : ''?>"><a href="?nav=admin">Settings</a></li>
@@ -64,6 +69,8 @@
                                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Settings <span class="caret"></span></a>
                                         <ul class="dropdown-menu">
                                             <?php
+                                                //temporary solution to generating the dropdown options in responsive views
+                                                //these only show in tablet/mobile views
                                                 include('models/admin/admin.php');
                                                 foreach($LIST AS $KEY=>$VALUE){
                                                     echo '<li><a href="?nav=inventory&subnav='.$VALUE['subnav'].$VALUE['params'].'">'.$KEY.'</a></li>';

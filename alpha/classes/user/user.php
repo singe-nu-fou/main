@@ -1,5 +1,21 @@
 <?php
+    /* =======================================================================
+     * (C) 2015 Stephen Palmer
+     * All Rights Reserved
+     * File: user.php
+     * Description: The user class containing functions specific to user account
+     *              management, as well as common functions related to users
+     *              used across the scope of portal.php. This, along with user
+     *              type are currently essential in order to use portal.php.
+     * Author: Stephen Palmer <stephen.palmerjr@outlook.com>
+     * PHP Version: 5.4
+     * ======================================================================= */
+
     class user{
+        /*
+         * Used by the table class. Contains the specifics for generating the
+         * tbody content when a user table is created.
+         */
         public static function tbody(){
             extract($_GET);
             $DB = portal::database();
@@ -30,6 +46,9 @@
             return $TBODY;
         }
         
+        /*
+         * Function for creating the form shown when New User is clicked.
+         */
         public static function create(){
             $PANEL = '<div id="new" class="panel panel-default" style="margin-bottom:0px;">
                         <div class="panel-heading">New User</div>
@@ -89,6 +108,9 @@
             return $PANEL;
         }
         
+        /*
+         * Function for creating the form shown when Edit User is clicked.
+         */
         public static function edit(){
             $DB = portal::database();
             extract($_GET);
@@ -177,6 +199,10 @@
             return $PANEL;
         }
         
+        /*
+         * When a new user form is submitted and passed to warp.php, insert is 
+         * called to validate and insert the new values into the database.
+         */
         public static function insert($DATA){
             extract($DATA['POST']);
             if(self::userNameExists(array('USER_NAME'=>$USER_NAME))){
@@ -208,6 +234,10 @@
             }
         }
         
+        /*
+         * When an edit user form is submitted and passed to warp.php, update is 
+         * called to validate and update the existing values into the database.
+         */
         public static function update($DATA){
             $DB = portal::database();
             extract($DATA['POST']);
@@ -285,6 +315,10 @@
             }
         }
         
+        /*
+         * When delete user is clicked and passed to warp.php, delete is 
+         * called to remove the values from the database.
+         */
         public static function delete($DATA){
             extract($DATA['GET']);
             $DB = portal::database();
@@ -297,46 +331,54 @@
             }
         }
         
+        /*
+         * Bool function used to determine if a passed username exists in the
+         * system.
+         */
         public static function userNameExists($DATA){
             extract($DATA);
             $DB = portal::database();
             if(isset($ID)){
                 $DB->select("USER_NAME","user_name","ID = ?",array($ID));
                 if($DB->fetch_assoc()){
-                    //$_SESSION[CLIENT]['ERROR_MSG'] = "Invalid username: This username already exists.";
                     return true;
                 }
             }
             elseif(isset($USER_NAME)){
                 $DB->select("USER_NAME","user_name","USER_NAME = ?",array($USER_NAME));
                 if($DB->fetch_assoc()){
-                    //$_SESSION[CLIENT]['ERROR_MSG'] = "Invalid username: This username already exists.";
                     return true;
                 }
             }
             return false;
         }
         
+        /*
+         * Bool function used to determine if a passed email exists in the
+         * system.
+         */
         public static function userEmailExists($DATA){
             extract($DATA);
             $DB = portal::database();
             if(isset($ID)){
                 $DB->select("USER_EMAIL","user_email","ID = ?",array($ID));
                 if($DB->fetch_assoc()){
-                    $_SESSION[CLIENT]['ERROR_MSG'] = "Invalid email address: This email address is already tied to another account.";
                     return true;
                 }
             }
             elseif(isset($USER_EMAIL)){
                 $DB->select("USER_EMAIL","USER_EMAIL","USER_EMAIL = ?",array($USER_EMAIL));
                 if($DB->fetch_assoc()){
-                    $_SESSION[CLIENT]['ERROR_MSG'] = "Invalid email address: This email address is already tied to another account.";
                     return true;
                 }
             }
             return false;
         }
         
+        /*
+         * Bool function used to determine if a passed username is acceptable
+         * for use in the current app.
+         */
         public static function validUsername($USER_NAME){
             $_SESSION[CLIENT]['ERROR_MSG'] = 'Invalid username: ';
             switch(true){
@@ -351,6 +393,10 @@
             return true;
         }
         
+        /*
+         * Bool function used to determine if a passed password is acceptable
+         * for use in the current app.
+         */
         public static function validPassword($USER_PASS){
             $_SESSION[CLIENT]['ERROR_MSG'] = "Invalid password: ";
             switch(true){
@@ -362,31 +408,5 @@
             }
             unset($_SESSION[CLIENT]['ERROR_MSG']);
             return true;
-        }
-        
-        public static function getUserGroup($DATA){
-            extract($DATA);
-            $DB = portal::database();
-            if(!isset($DATA['TYPE'])){
-                return;
-            }
-            switch($DATA['TYPE']){
-                case 'ALL':
-                    $DB->query("SELECT user_account.ID, 
-                                USER_NAME 
-                                FROM user_account 
-                                JOIN user_type ON USER_TYPE_ID = user_type.ID
-                                JOIN user_name ON USER_NAME_ID = user_name.ID");
-                    break;
-                default:
-                    $DB->query("SELECT user_account.ID, 
-                                USER_NAME 
-                                FROM user_account 
-                                JOIN user_type ON USER_TYPE_ID = user_type.ID
-                                JOIN user_name ON USER_NAME_ID = user_name.ID
-                                WHERE USER_TYPE = 'ADMIN' OR USER_TYPE = ?",array($TYPE));
-                    break;
-            }
-            return $DB->fetch_assoc_all();
         }
     }

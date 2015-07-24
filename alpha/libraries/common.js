@@ -1,4 +1,7 @@
 $(document).ready(function(){
+    /*
+     * basic, bare minimum version of selectable to add the funcionality of
+    */
     $('tr').click(function(){
         if($(this).hasClass('active')){
             $(this).removeClass('active');

@@ -1,5 +1,21 @@
 <?php
+    /* =======================================================================
+     * (C) 2015 Stephen Palmer
+     * All Rights Reserved
+     * File: user_type.php
+     * Description: The user_type class containing functions specific to user 
+     *              account management, as well as common functions related to 
+     *              users used across the scope of portal.php. This, along with 
+     *              user are currently essential in order to use portal.php.
+     * Author: Stephen Palmer <stephen.palmerjr@outlook.com>
+     * PHP Version: 5.4
+     * ======================================================================= */
+
     class user_type{
+        /*
+         * Used by the table class. Contains the specifics for generating the
+         * tbody content when a user_type table is created.
+         */
         public static function tbody(){
             extract($_GET);
             $DB = portal::database();
@@ -19,6 +35,9 @@
             return $TBODY;
         }
         
+        /*
+         * Function for creating the form shown when New User Type is clicked.
+         */
         public static function create(){
             $PANEL = '<div id="new" class="panel panel-default" style="margin-bottom:0px;">
                         <div class="panel-heading">New User Type</div>
@@ -48,6 +67,9 @@
             return $PANEL;
         }
         
+        /*
+         * Function for creating the form shown when Edit User Type is clicked.
+         */
         public static function edit(){
             $DB = portal::database();
             extract($_GET);
@@ -91,6 +113,10 @@
             return $PANEL;
         }
         
+        /*
+         * Function used throughout the scope of portal.php to get an array of
+         * all user types, or a single user type based on passed parameters.
+         */
         public static function getUserType($DATA = NULL){
             if($DATA !== NULL){
                 extract($DATA);
@@ -114,6 +140,10 @@
             return NULL;
         }
         
+        /*
+         * Bool function to determine if the passed parameter is a real user
+         * type or not.
+         */
         public static function isRealUserType($DATA){
             if($DATA !== NULL){
                 extract($DATA);
@@ -139,6 +169,10 @@
             return false;
         }
         
+        /*
+         * When a new user type form is submitted and passed to warp.php, insert is 
+         * called to validate and insert the new values into the database.
+         */
         public static function insert($DATA){
             extract($DATA['POST']);
             if(self::isRealUserType(array('NAME'=>$USER_TYPE)) || preg_match('/[\'^£$%&*()}{@#~?><>,.|=+¬-]/',$USER_TYPE)){
@@ -149,6 +183,10 @@
             $DB->insert("user_type",array("USER_TYPE"=>$USER_TYPE));
         }
         
+        /*
+         * When an edit user type form is submitted and passed to warp.php, update is 
+         * called to validate and update the existing values into the database.
+         */
         public static function update($DATA){
             extract($DATA['POST']);
             foreach($TYPES AS $ID=>$TYPE){
@@ -162,6 +200,10 @@
             }
         }
         
+        /*
+         * When delete user type is clicked and passed to warp.php, delete is 
+         * called to remove the values from the database.
+         */
         public static function delete($DATA){
             extract($DATA['GET']);
             $DB = portal::database();
